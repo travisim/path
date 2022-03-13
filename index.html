@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+
+  <body>
+    <div class="upload">
+     
+      <p>Upload .map files from <a href="https://movingai.com/benchmarks/maze/index.html">here</a>
+      </p>
+      </br>
+      <header>
+           <input type="file" accept=".map" id="file-input" >                  <!-- onchange runs JS function showFile() -->
+      </header>
+			<div id="file-output"></div>
+     
+    </div>
+
+		<div id="map" style="position: absolute; left: 0; right: 0; margin-left: auto; margin-right: auto;">
+			<canvas id="bg" height="512" width="512" style="position: absolute; z-index: 0; border:1px solid blue; background-color: transparent; left: 0; right: 0; margin-left: auto; margin-right: auto; height: 800px; width: 800px;"></canvas>
+			<canvas id="fg" height="512" width="512" style="position: absolute; z-index: 1; border:1px solid black; background-color: transparent; left: 0; right: 0; margin-left: auto; margin-right: auto; height: 800px; width: 800px;"></canvas>
+		</div>
+      <!-- map-file writes) -->
+
+		<div id="container"></div>
+  <!--  <script src="script.js"></script> -->
+   
+      <script src=".map parser and graph.js"></script>
+  </body>
+  
+</html>
+
