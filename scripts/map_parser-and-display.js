@@ -1,10 +1,9 @@
-
-
+const canvas_names = ["bg","queue","visited","path","start","goal"]
 
 let map_str="";
 
 /*This creates a global variable with the HTML element input in it. */
-var input = document.getElementById("file-input"); 
+var input = document.getElementById("map-input"); 
 /*This creates a global variable with the HTML element div with id output in it. */
 var output = document.getElementById("file-output");
 /* this 2 lines are used to set the source and the destination.
@@ -26,23 +25,37 @@ they might not exist if the change is going from a file (hello.txt) to no file a
   reader.addEventListener("load", function (e) {
           /* What we do here is take the result of the fileReader and put it inside our output div to display it to the users. This is where you could do your scrambling and maybe save the result in a variable ? */
     //output.textContent = e.target.result;
-    let map_str=e.target.result
-    console.log(map_parser(map_str));//USE THIS FUNCTION map_parser(map_str) SIR TO INPUT TO YOUR MAP, <----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-   
-        // insert code mniupulating string here
-        //console.log(map_str.length);
-        //console.log(map_str.substring(0,11));
+    let map_str=e.target.result;
+    window.map_arr = map_parser(map_str);  // map_arr is a global variable because it has to be accessed by other js files
+		map_display(map_arr);
+		window.bfs_solver = new BFS(window.map_arr, 4, true, "N", "clockwise");
   });
         /* This is where we tell the FileReader to open and get the content of the file. This will fire the load event and get the function above to execute its code. */
         reader.readAsText(myFile);
   
-
-        
       }
     });
 
 
 
+/*takes in a  2d array with 512 index with 512 numbers (1 0 )(1 are passable and 0 is not passable) and displays it onto a grid*/
+
+
+function map_display(map_array_var){
+  var b_canvas = document.getElementById("bg");
+	var b_context = b_canvas.getContext("2d");
+
+  for (i = 0; i < map_array_var.length; i++) {
+    for (j = 0; j < map_array_var[i].length; j++) {
+      if (map_array_var[i][j] == 0){
+        b_context.fillRect(j, i, 1, 1);
+      }
+      else{
+      
+      }
+    }
+  }
+}
 
 
 
@@ -50,44 +63,37 @@ they might not exist if the change is going from a file (hello.txt) to no file a
 
 
 
-
-
-
-
-
-
-
-
-
-/*takes in an array with 512 index with each index constaining a string of 512 charecters(. g @ o t s w) and returns an array with 512 index with charecters (1 0 )(1 are passable and 0 is not passable)*/
+/*takes in a 2d array with 512 index with each index constaining a string of 512 charecters(. g @ o t s w) and returns an 2d array with 512 index with 512 numbers (1 0 )(1 are passable and 0 is not passable)*/
 
 
 function map_parser(map_str_var){
 
-
   var map_array_final = [];
-
-  for (i = 0; i < 512; i++) {
+  var map_array = map_str_var.split("\n").splice(4).filter((el) => {
+	  return el !== null && typeof el !== 'undefined' && el.length>0;
+	});
+  for (i = 0; i < map_array.length; i++) {
     map_array_final.push(Array());
   }
     //console.log(map_array_final);
-  map_array = map_str_var.split("\n").splice(4);
+
   for (i = 0; i < map_array.length; i++) {
     for (j = 0; j < map_array[i].length; j++) {
-      if (map_array[i][j] == "." || map_array[i][j] == "g" || map_array[i][j] == "s"){
+      if (map_array[i][j] == "." || map_array[i][j] == "G" || map_array[i][j] == "S"){
         map_array_final[i].push(1);
-        b_context.fillRect(j, i, 1, 1);
+       // b_context.fillRect(j, i, 1, 1);
         //console.log("1");
       }
-      else{
+      else if(map_array[i][j] == "@" || map_array[i][j] == "0" || map_array[i][j] == "T"|| map_array[i][j] == "W"){
         map_array_final[i].push(0);
         //console.log("0");  
       }
     }
   }
-  console.log(map_array_final)
-  //return map_array_final
+  return map_array_final;
 }
-  //console.log(map_array_final);
+
+
+
 
 

@@ -35,8 +35,19 @@ color: blue;
 font-size: 13px;
 text-decoration: none;
 }
-input[type="file"] {
-background: #0061ff;
+
+#scen-input{
+  background: #0061ff;
+padding: 15px 11px 18px 20px;
+border-radius: 4px;
+cursor: pointer;
+color: white;
+width: 159px;
+border: 2px solid #00c7fc;
+outline: 0;
+}
+#map-input{
+  background: #ff2600;
 padding: 15px 11px 18px 20px;
 border-radius: 4px;
 cursor: pointer;
@@ -46,3 +57,39 @@ border: 2px solid #00c7fc;
 outline: 0;
 }
 
+option{
+	font-family: monospace;
+}
+
+canvas{
+	height: 800px;
+	width: 800px;
+	position: absolute;
+	border:1px solid blue;
+	background-color: transparent;
+	left: 0;
+	right: 0;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+
+
+#bg{
+	z-index:0;
+}
+#queue{
+	z-index:1;
+}
+#visited{
+	z-index:2;
+}
+#path{
+	z-index:3;
+}
+#start{
+	z-index:4;
+}
+#goal{
+	z-index:4;
+}

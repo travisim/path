@@ -10,26 +10,61 @@
   <body>
     <div class="upload">
      
-      <p>Upload .map files from <a href="https://movingai.com/benchmarks/maze/index.html">here</a>
+      <p>Upload .map files from <a href="https://movingai.com/benchmarks/street/index.html">here</a>
       </p>
       </br>
-      <header>
-           <input type="file" accept=".map" id="file-input" >                  <!-- onchange runs JS function showFile() -->
-      </header>
-			<div id="file-output"></div>
-     
+			<ul>
+				<li>
+					<label>Upload .map files</label>
+        	<input type="file" accept=".map" id="map-input">
+				</li>
+				<li>
+					<label>Upload .scen files</label>
+					<input type="file" accept=".scen" id="scen-input" >
+				</li>
+			</ul>
+			
+			<div>
+				<p id="scen-label"></p>
+				<label for="scen">Choose scenario setup:</label>
+				<select name="scen-select" size="1" id="scen-select" >
+				  <option disabled="disabled">&nbsp&nbspX1&nbsp&nbsp&nbspY1&nbsp&nbsp&nbspX2&nbsp&nbsp&nbspY2&nbspOptimal Length</option>
+          <div id="fill_options">
+            
+          </div>
+				</select>
+			</div>
+
+			<div>
+				<button id="compute_btn" onclick="compute_path()">Compute Path</button>
+				<button id="display_btn" onclick="display_path()">Display Path</button>
+				<button id="back_btn">Back</button>
+				<button id="start_btn">Start</button>
+				<button id="stop_btn">Stop</button>
+				<button id="forward_btn">Forward</button>
+			</div>
+			
     </div>
 
 		<div id="map" style="position: absolute; left: 0; right: 0; margin-left: auto; margin-right: auto;">
-			<canvas id="bg" height="512" width="512" style="position: absolute; z-index: 0; border:1px solid blue; background-color: transparent; left: 0; right: 0; margin-left: auto; margin-right: auto; height: 800px; width: 800px;"></canvas>
-			<canvas id="fg" height="512" width="512" style="position: absolute; z-index: 1; border:1px solid black; background-color: transparent; left: 0; right: 0; margin-left: auto; margin-right: auto; height: 800px; width: 800px;"></canvas>
+			<canvas id="bg" height="512" width="512"></canvas><!-- loaded .map file -->
+			<canvas id="queue" height="512" width="512" ></canvas> <!-- neighbouring nodes  that are in the queue -->
+			<canvas id="visited" height="512" width="512" ></canvas>
+			<canvas id="path" height="512" width="512" ></canvas>
+			<canvas id="start" height="512" width="512"></canvas>
+			<canvas id="goal" height="512" width="512" ></canvas>
 		</div>
-      <!-- map-file writes) -->
+      <!-- map-file writes -->
 
 		<div id="container"></div>
-  <!--  <script src="script.js"></script> -->
+  
    
-      <script src=".map parser and graph.js"></script>
+    <script src="scripts/map_parser-and-display.js"></script>
+		<script src="scripts/scen_parser-and-display.js"></script>
+		<script src="scripts/pathfinder.js"></script>
+    <script src="scripts/pathfinder_display.js"></script>
+		<script src="scripts/controls.js"></script>
+    <!--script src="scripts/pathfinder not class.js"></script-->
   </body>
   
 </html>
