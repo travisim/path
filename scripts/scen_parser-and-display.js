@@ -63,6 +63,11 @@ function scen_show_selection(scen_array){
 	//display first scene as default at index 0
   displayScen(0);
 	var scen_select_elem = document.getElementById("scen-select");
+	var child = scen_select_elem.lastElementChild; 
+	while (child) {
+		scen_select_elem.removeChild(child);
+		child = scen_select_elem.lastElementChild;
+	}
 	/* each iteration [ '9',
     'Berlin_0_512.map',
     '512',
@@ -98,38 +103,46 @@ scen_select.addEventListener("change", load_scen);
 //used the onclick of the option in select instead of event listener as there maybe other changes
 
 function load_scen(){
-  var choice = scen_select.options[scen_select.selectedIndex].value;  // choice is a global variable to be shared between files
+  var choice = scen_select.options[scen_select.selectedIndex].value;
 	displayScen(choice);
 }
 
 function displayScen(choice){
-	var start = document.getElementById("start");
-	start.getContext("2d").clearRect(0, 0, start.width, start.height); // 0 0 512 512
-	start.getContext("2d").fillStyle = "red";
-	start.getContext("2d").fillRect(scen_array[choice][4], scen_array[choice][5], 5, 5);
-	window.map_start = [Number(scen_array[choice][5]),Number(scen_array[choice][4])];  //  in Y, X
-	var goal = document.getElementById("goal");
-	goal.getContext("2d").clearRect(0, 0, goal.width, goal.height); // 0 0 512 512
-	goal.getContext("2d").fillStyle = "green";
-	goal.getContext("2d").fillRect(scen_array[choice][6], scen_array[choice][7], 5, 5);
-	window.map_goal = [Number(scen_array[choice][7]), Number(scen_array[choice][6])]
-	
+
+  
+ 
+	window.map_start = [Number(scen_array[choice][5]),Number(scen_array[choice][4])];//  in Y, X
+	drawCross([Number(scen_array[choice][5]),Number(scen_array[choice][4])], "start");
+	window.map_goal = [Number(scen_array[choice][7]), Number(scen_array[choice][6])];//  in Y, X
+	drawCross( [Number(scen_array[choice][7]), Number(scen_array[choice][6])], "goal");
+	  
 }
 
-/* each iteration [ '9',
-    'Berlin_0_512.map',
-    '512',
-    '512',
-    '173',
-    '435',
-    '156',
-    '467','39.04163055' ]*/
 
-/* summary of 3 functions abpve*/
+//takes in point[Y,X] and id of point to draw a cross. For ID, start=black  goal= reen
+function drawCross(point, id){
+  var canvas = document.getElementById(id);
+  var context = canvas.getContext("2d");
+ 
+  var RGBcolour;
+ 
+  if (id  == "start") { RGBcolour = "rgb(150,150,150)" ; }
+  else if (id == "goal") { RGBcolour = "rgb(135,214,135)"; }
+
+  context.clearRect(0, 0, canvas.width, canvas.height); 
+  //drawing the crosses from top left down and top right down
+  context.beginPath();
+  context.arc(point[1], point[0], 7.710, 0, 2 * Math.PI);
+  context.moveTo(point[1]-5, point[0]-5);
+  context.lineTo(point[1]+5, point[0]+5);
+  context.moveTo(point[1]-5, point[0]+5);
+  context.lineTo(point[1]+5, point[0]-5);
+  context.strokeStyle = RGBcolour;
+  context.stroke();
+}
 
 
 
 
-
-
+/* summary of 3 functions above*/
 

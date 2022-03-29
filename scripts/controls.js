@@ -1,38 +1,40 @@
 // window.map_start;
 // window.map_goal;
 // window.map_arr;
+// window.planners => array of planners
+// window.planner_choice => references the index of the planner in window.planners;
 
-
-//document.getElementById("compute_btn").addEventListener("onclick", compute_path);
+/* registers & starts searching for path on the given map using the given solver */
+document.getElementById("compute_btn").addEventListener("click", compute_path);
 
 function compute_path(){
-	if(!window.bfs_solver){
-		alert("no map loaded!");
-		return
-	}
+	if(!window.planner_choice) return alert("no planner loaded!");
+	if(!window.map_arr) return alert("no map loaded!");
+
+	window.planner = new window.planners[window.planner_choice](window.map_arr);
+
 	console.log("computing path...")
-	window.bfs_solver.search(window.map_start, window.map_goal);
-  pathfinder_display(window.bfs_solver.search(window.map_start, window.map_goal));
+	var path = window.planner.search(window.map_start, window.map_goal);
+	console.log(path);
+  
 }
 
-//document.getElementById("display_btn").addEventListener("onclick", display_path);
+/* displays the solved path */
+document.getElementById("display_btn").addEventListener("click", display_path);
 
 function display_path(){
-	if(!window.bfs_solver){
-		alert("no map loaded!");
-		return
-	}
-	var final_state = window.bfs_solver.final_state();
+	if(!window.planner_choice) return alert("no planner loaded!");
+	if(!window.map_arr) return alert("no map loaded!");
+	if(!window.planner) return alert("not computed");
+	
+	var final_state = window.planner.final_state();
 	var path = final_state[0].path;  //  array of coordinates, YX
 	var queue = final_state[1];  // array of nodes
 	var visited = final_state[2];  // matrix marking which nodes are visited;
 
 	var path_canvas = document.getElementById("path");
-	path_canvas.getContext("2d").clearRect(0, 0, path_canvas.width, path_canvas.height); // 0 0 512 512
-	path_canvas.getContext("2d").fillStyle = "#BFD8B8";
-	for(var i=0;i<path.length;++i){
-		path_canvas.getContext("2d").fillRect(path[i][1], path[i][0], 1, 1);
-	}
+	pathfinder_display(path);
+ 
 
 	var queue_canvas = document.getElementById("queue");
 	queue_canvas.getContext("2d").clearRect(0, 0, queue_canvas.width, queue_canvas.height); // 0 0 512 512

@@ -28,7 +28,6 @@ they might not exist if the change is going from a file (hello.txt) to no file a
     let map_str=e.target.result;
     window.map_arr = map_parser(map_str);  // map_arr is a global variable because it has to be accessed by other js files
 		map_display(map_arr);
-		window.bfs_solver = new BFS(window.map_arr, 4, true, "N", "clockwise");
   });
         /* This is where we tell the FileReader to open and get the content of the file. This will fire the load event and get the function above to execute its code. */
         reader.readAsText(myFile);
@@ -42,26 +41,92 @@ they might not exist if the change is going from a file (hello.txt) to no file a
 
 
 function map_display(map_array_var){
-  var b_canvas = document.getElementById("bg");
-	var b_context = b_canvas.getContext("2d");
 
+	canvas_names.forEach(name=>{
+		var canvas = document.getElementById(name);
+		var context = canvas.getContext("2d");
+		canvas.height = map_array_var.length;
+		canvas.width = map_array_var[0].length;
+    
+	});
+/* summary the css canvas and html/ js canvas are different
+  to get sharp lines dont let the canvs auto scale up a low res js canvas to a high res one 
+  instead create a js canvas that is the same as the css one and scale up the small/large image created
+
+for scaling down, image gets lighter, solution: make lines thicker
+for scaling up, lines between pixel forms, solution: make lines thicker
+*/
+  
+  const myCanvas =  document.getElementById("bg");
+  let ctx = myCanvas.getContext("2d");
+  const originalWidth = map_array_var[0].length;
+  const originalHeight = map_array_var.length;
+    
+  // clientWidth/ Client Height is height/ width of canvas in css
+const dimensions = getObjectFitSize(
+	true,
+	myCanvas.clientWidth,
+	myCanvas.clientHeight,
+	myCanvas.width,
+	myCanvas.height
+);
+//console.log(myCanvas.clientWidth);
+const dpr =  1 ;
+//window.devicePixelRatio usually got decimals
+//console.log(dimensions.height, dimensions.width);
+myCanvas.width = dimensions.width * dpr; // change js/html canvas width
+myCanvas.height = dimensions.height * dpr;// change js/html canvas height
+
+  console.log(myCanvas.clientWidth /  map_array_var[0].length,myCanvas.clientHeight / map_array_var.length);
+  let ratio = Math.min(
+    myCanvas.clientWidth /  originalWidth,
+    myCanvas.clientHeight / originalHeight
+  );
+ctx.scale(ratio * dpr, ratio * dpr); //adjust this! context.scale(2,2); 2=200%
   for (i = 0; i < map_array_var.length; i++) {
     for (j = 0; j < map_array_var[i].length; j++) {
       if (map_array_var[i][j] == 0){
-        b_context.fillRect(j, i, 1, 1);
+        ctx.fillRect(j, i, 1.05, 1.05);
       }
       else{
       
       }
     }
   }
+
+  
+  // adapted from: https://www.npmjs.com/package/intrinsic-scale
+  //contains extra code to cover map elements that exceed css canvas
+  function getObjectFitSize(
+    contains /* true = contain(contain within css canvas), false = cover (extend beyond css canvas)*/,
+    containerWidth,
+    containerHeight,
+    width,
+    height
+  ) {
+    var doRatio = width / height; //1.4
+    var cRatio = containerWidth / containerHeight;
+    var targetWidth = 0;
+    var targetHeight = 0;
+    //         if true bitmap larger than css canvas
+    var test = contains ? (doRatio > cRatio) : (doRatio < cRatio);
+  
+    if (test) {
+      targetWidth = containerWidth;
+      targetHeight = targetWidth / doRatio;
+    } else {
+      targetHeight = containerHeight;
+      targetWidth = targetHeight * doRatio;
+    }
+  
+    return {
+      width: targetWidth,
+      height: targetHeight,
+      x: (containerWidth - targetWidth) / 2,
+      y: (containerHeight - targetHeight) / 2
+    };
+  }
 }
-
-
-
-
-
-
 
 /*takes in a 2d array with 512 index with each index constaining a string of 512 charecters(. g @ o t s w) and returns an 2d array with 512 index with 512 numbers (1 0 )(1 are passable and 0 is not passable)*/
 
@@ -81,7 +146,7 @@ function map_parser(map_str_var){
     for (j = 0; j < map_array[i].length; j++) {
       if (map_array[i][j] == "." || map_array[i][j] == "G" || map_array[i][j] == "S"){
         map_array_final[i].push(1);
-       // b_context.fillRect(j, i, 1, 1);
+       // b_context.fillRect(j, i, (1+1/ratio), (1+1/ratio));
         //console.log("1");
       }
       else if(map_array[i][j] == "@" || map_array[i][j] == "0" || map_array[i][j] == "T"|| map_array[i][j] == "W"){

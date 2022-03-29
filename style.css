@@ -1,11 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Open+Sans');
 
-.body {
-   margin: 2em;
-   text-align: center;
-   font-family: 'Open Sans';
-   background: #7a7a7a;
-}
 .upload {
    background: #d6d6d6;  
    margin: 30px auto;
@@ -37,7 +30,7 @@ text-decoration: none;
 }
 
 #scen-input{
-  background: #0061ff;
+background: #0061ff;
 padding: 15px 11px 18px 20px;
 border-radius: 4px;
 cursor: pointer;
@@ -62,15 +55,18 @@ option{
 }
 
 canvas{
-	height: 800px;
-	width: 800px;
-	position: absolute;
+	height: 512px;
+	width: 512px;
+	
 	border:1px solid blue;
-	background-color: transparent;
-	left: 0;
+	background-color: transparent;/* to layer canvas*/
+	position: absolute; /* this and next 2 lines canvases are all at the same position*/
+  left: 0;
 	right: 0;
 	margin-left: auto;
 	margin-right: auto;
+  display: block;  /* start canvas on new block/newlinw*/
+  object-fit: contain;  /* scale bitmap to match css canvas*/
 }
 
 

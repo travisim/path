@@ -7,8 +7,8 @@
     <link href="style.css" rel="stylesheet" type="text/css" />
   </head>
 
-  <body>
-    <div class="upload">
+  <body >
+    <div class="upload" style="width:75%; height:75%;">
      
       <p>Upload .map files from <a href="https://movingai.com/benchmarks/street/index.html">here</a>
       </p>
@@ -26,7 +26,7 @@
 			
 			<div>
 				<p id="scen-label"></p>
-				<label for="scen">Choose scenario setup:</label>
+				<label for="scen">Choose scenario:</label>
 				<select name="scen-select" size="1" id="scen-select" >
 				  <option disabled="disabled">&nbsp&nbspX1&nbsp&nbsp&nbspY1&nbsp&nbsp&nbspX2&nbsp&nbsp&nbspY2&nbspOptimal Length</option>
           <div id="fill_options">
@@ -34,10 +34,17 @@
           </div>
 				</select>
 			</div>
+      
+      <div>
+				<p id="planner-label"></p>
+				<label for="planner">Choose planner:    </label>
+				<select name="planner-select" size="1" id="planner-select" >
+				</select>
+			</div>
 
 			<div>
-				<button id="compute_btn" onclick="compute_path()">Compute Path</button>
-				<button id="display_btn" onclick="display_path()">Display Path</button>
+				<button id="compute_btn">Compute Path</button>
+				<button id="display_btn">Display Path</button>
 				<button id="back_btn">Back</button>
 				<button id="start_btn">Start</button>
 				<button id="stop_btn">Stop</button>
@@ -61,9 +68,13 @@
    
     <script src="scripts/map_parser-and-display.js"></script>
 		<script src="scripts/scen_parser-and-display.js"></script>
-		<script src="scripts/pathfinder.js"></script>
-    <script src="scripts/pathfinder_display.js"></script>
+		<script src="scripts/pathfinding/pathfinder.js"></script>
+    <script src="scripts/pathfinding/bfs.js"></script>
+		<script src="scripts/pathfinding/dfs.js"></script>
+    <script src="scripts/pathfinding/dijkstra.js"></script>
+ 		<script src="scripts/pathfinder_display.js"></script>
 		<script src="scripts/controls.js"></script>
+		<script src="scripts/planner_select.js"></script>
     <!--script src="scripts/pathfinder not class.js"></script-->
   </body>
   
