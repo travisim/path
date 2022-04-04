@@ -80,12 +80,20 @@ canvas{
 #visited{
 	z-index:2;
 }
-#path{
+#neighbours{
 	z-index:3;
 }
-#start{
+#current_YX{
 	z-index:4;
+}
+#path{
+	z-index:5;
+}
+#start{
+	z-index:6;
 }
 #goal{
-	z-index:4;
+	z-index:7;
 }
+
+

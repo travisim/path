@@ -59,7 +59,7 @@ function scen_parser(contents){
 
 function scen_show_selection(scen_array){
 	var scen_label_elem = document.getElementById("scen-label");
-	scen_label_elem.innerHTML = `Uploaded scen for ${scen_array[0][1]}. Map   Width: ${scen_array[0][2]} Map Height: ${scen_array[0][3]}`;	
+	scen_label_elem.innerHTML = `Choose scenario for ${scen_array[0][1]}. Map   Width: ${scen_array[0][2]} Map Height: ${scen_array[0][3]}`;	
 	//display first scene as default at index 0
   displayScen(0);
 	var scen_select_elem = document.getElementById("scen-select");
@@ -109,12 +109,17 @@ function load_scen(){
 
 function displayScen(choice){
 
-  
+  const start_canvas = document.getElementById("start");
+  const goal_canvas = document.getElementById("goal");
  
 	window.map_start = [Number(scen_array[choice][5]),Number(scen_array[choice][4])];//  in Y, X
-	drawCross([Number(scen_array[choice][5]),Number(scen_array[choice][4])], "start");
+	//drawCross([Number(scen_array[choice][5]),Number(scen_array[choice][4])], "start");
+  //drawPoint([Number(scen_array[choice][5]),Number(scen_array[choice][4])], "start");
+  display_canvas(start_canvas, "point",  [Number(scen_array[choice][5]),Number(scen_array[choice][4])], "rgb(150,150,150)");
 	window.map_goal = [Number(scen_array[choice][7]), Number(scen_array[choice][6])];//  in Y, X
-	drawCross( [Number(scen_array[choice][7]), Number(scen_array[choice][6])], "goal");
+	//drawCross( [Number(scen_array[choice][7]), Number(scen_array[choice][6])], "goal");
+  //drawPoint( [Number(scen_array[choice][7]), Number(scen_array[choice][6])], "goal");
+   display_canvas(goal_canvas, "point",  [Number(scen_array[choice][7]), Number(scen_array[choice][6])], "rgb(135,214,135)");
 	  
 }
 
@@ -132,7 +137,7 @@ function drawCross(point, id){
   context.clearRect(0, 0, canvas.width, canvas.height); 
   //drawing the crosses from top left down and top right down
   context.beginPath();
-  context.arc(point[1], point[0], 7.710, 0, 2 * Math.PI);
+ // context.arc(point[1], point[0], 7.5, 0, 2 * Math.PI);
   context.moveTo(point[1]-5, point[0]-5);
   context.lineTo(point[1]+5, point[0]+5);
   context.moveTo(point[1]-5, point[0]+5);
@@ -140,9 +145,20 @@ function drawCross(point, id){
   context.strokeStyle = RGBcolour;
   context.stroke();
 }
+/*
+function drawPoint(point, id){
+  var canvas = document.getElementById(id);
+  var context = canvas.getContext("2d");
+  var RGBcolour;
+ 
+  if (id  == "start") { RGBcolour = "rgb(150,150,150)" ; }
+  else if (id == "goal") { RGBcolour = "rgb(135,214,135)"; }
 
-
-
-
-/* summary of 3 functions above*/
+  context.clearRect(0, 0, canvas.width, canvas.height); 
+  context.strokeStyle = RGBcolour;
+  context.fillStyle = RGBcolour;
+  context.fillRect(point[1], point[0], 1, 1);
+  
+}
+*/
 

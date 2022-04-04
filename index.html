@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-    
+   
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
@@ -13,25 +13,18 @@
       <p>Upload .map files from <a href="https://movingai.com/benchmarks/street/index.html">here</a>
       </p>
       </br>
-			<ul>
-				<li>
-					<label>Upload .map files</label>
-        	<input type="file" accept=".map" id="map-input">
-				</li>
-				<li>
-					<label>Upload .scen files</label>
-					<input type="file" accept=".scen" id="scen-input" >
-				</li>
-			</ul>
 			
-			<div>
+      <label>Upload .map files</label>
+      <input type="file" accept=".map" id="map-input">
+      <br>
+      <label>Upload .scen files</label>
+      <input type="file" accept=".scen" id="scen-input">
+
+      <div>
 				<p id="scen-label"></p>
 				<label for="scen">Choose scenario:</label>
 				<select name="scen-select" size="1" id="scen-select" >
 				  <option disabled="disabled">&nbsp&nbspX1&nbsp&nbsp&nbspY1&nbsp&nbsp&nbspX2&nbsp&nbsp&nbspY2&nbspOptimal Length</option>
-          <div id="fill_options">
-            
-          </div>
 				</select>
 			</div>
       
@@ -49,33 +42,34 @@
 				<button id="start_btn">Start</button>
 				<button id="stop_btn">Stop</button>
 				<button id="forward_btn">Forward</button>
-			</div>
-			
+      </div>
+
+      
     </div>
+    
+    
 
 		<div id="map" style="position: absolute; left: 0; right: 0; margin-left: auto; margin-right: auto;">
 			<canvas id="bg" height="512" width="512"></canvas><!-- loaded .map file -->
 			<canvas id="queue" height="512" width="512" ></canvas> <!-- neighbouring nodes  that are in the queue -->
 			<canvas id="visited" height="512" width="512" ></canvas>
+      <canvas id="current_YX" height="512" width="512" ></canvas>
+      <canvas id="neighbours" height="512" width="512" ></canvas>
 			<canvas id="path" height="512" width="512" ></canvas>
 			<canvas id="start" height="512" width="512"></canvas>
 			<canvas id="goal" height="512" width="512" ></canvas>
 		</div>
-      <!-- map-file writes -->
-
-		<div id="container"></div>
+     
   
-   
+    <script src="scripts/canvas_scaler-and-display.js"></script>
     <script src="scripts/map_parser-and-display.js"></script>
 		<script src="scripts/scen_parser-and-display.js"></script>
 		<script src="scripts/pathfinding/pathfinder.js"></script>
     <script src="scripts/pathfinding/bfs.js"></script>
-		<script src="scripts/pathfinding/dfs.js"></script>
-    <script src="scripts/pathfinding/dijkstra.js"></script>
- 		<script src="scripts/pathfinder_display.js"></script>
+    <script src="scripts/pathfinding/dfs.js"></script>
 		<script src="scripts/controls.js"></script>
 		<script src="scripts/planner_select.js"></script>
-    <!--script src="scripts/pathfinder not class.js"></script-->
+    <script src="scripts/animate_spread.js"></script>
   </body>
   
 </html>

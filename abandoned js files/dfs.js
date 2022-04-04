@@ -1,7 +1,7 @@
-class Dijkstra extends GridPathFinder{
+class DFS extends GridPathFinder{
 
 	static get display_name(){
-		return "Dijkstra's Algorithm";
+		return "Depth-First Search (DFS)";
 	}
 	
 	constructor(map, num_neighbours = 8, diagonal_allow = true, first_neighbour = "N", search_direction = "anticlockwise"){
@@ -13,7 +13,7 @@ class Dijkstra extends GridPathFinder{
     this.start = start; //in array form [y,x]  [0,0] is top left  [512,512] is bottom right
     this.goal = goal;
 		this.states = [];  // cache? to store each expansion
-		this.queue = [];  // BFS uses a FIFO queue to order the sequence in which nodes are visited
+		this.stack = [];  // BFS uses a FIFO queue to order the sequence in which nodes are visited
 		this.neighbours = [];  // current cell's neighbours; only contains passable cells
 
 		this.visited = [];  // 2d array to mark which cells have been visited
@@ -49,9 +49,6 @@ class Dijkstra extends GridPathFinder{
 				console.log(this.current_node.path);
 				break;
 			}
-
-
-      
 			// NOTE, a node is only visited if all its neighbours have been added to the queue
 			this.neighbours = [];  // reset the neighbours for each new node
 			//console.log("current");
@@ -59,14 +56,10 @@ class Dijkstra extends GridPathFinder{
 			//console.log(this.current_YX);
 			//console.log("next");
 			/* iterates through the 4 or 8 neighbours and adds the valid (passable & within boundaries of map) ones to the queue & neighbour array */
-			
-      function neighbours(current_node_YX, visited, num_neighbours ) {
-        
-      }
-      for(var i=0;i<this.num_neighbours;++i){
-				var next_YX = [this.current_node_YX[0]+this.delta[i][0], this.current_node_YX[1]+this.delta[i][1]];   // calculate the coordinates for the new neighbour
+			for(var i=0;i<this.num_neighbours;++i){
+				var next_YX = [this.current_node_YX[0]+this.delta[i][0], this.current_node_YX[1]+this.delta[i][1]];  // calculate the coordinates for the new neighbour
 				//console.log(next_YX);
-				if(next_YX[0]<0 || next_YX[0]>=this.map_height || next_YX[1]<0 || next_YX[1]>=this.map_width) continue;// skip loop if neighbour is undefined
+				if(next_YX[0]<0 || next_YX[0]>=this.map_height || next_YX[1]<0 || next_YX[1]>=this.map_width) continue;
 				if (this.map[next_YX[0]][next_YX[1]]==1){  // if neighbour is passable
 					var next_node = new Node(0, this.current_node.path.concat([next_YX]), next_YX);  // create a new node with said neighbour's details
 					this.neighbours.push(next_node);  // add to neighbours
@@ -85,16 +78,13 @@ class Dijkstra extends GridPathFinder{
 			console.log("path does not exist");
 			return null;
 		}
-
 	}
-
-
-
 
   
 	final_state(){
 		// this method displays the final path & visited nodes on the map
 		if (!this.states) alert("haven't computed!");
 		return this.states[this.states.length-1];
+    console.log("hi");
 	}
 }
