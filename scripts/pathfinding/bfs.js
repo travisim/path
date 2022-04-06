@@ -9,7 +9,7 @@ class BFS extends GridPathFinder{
 		super(map, num_neighbours, diagonal_allow, first_neighbour, search_direction); 
 	}
 
-	search(start, goal){
+  search(start, goal){
     // this method finds the path using the prescribed map, start & goal coordinates
     this.start = start; //in array form [y,x]  [0,0] is top left  [512,512] is bottom right
     this.goal = goal;
@@ -68,6 +68,8 @@ class BFS extends GridPathFinder{
         this.path = path;
 				break;
 			}
+      
+     
 			// NOTE, a node is only visited if all its neighbours have been added to the queue
 			this.neighbours = [];  // reset the neighbours for each new node
 			//console.log("next");
@@ -85,12 +87,79 @@ class BFS extends GridPathFinder{
           this.visited[this.current_node_YX[0]][this.current_node_YX[1]] = 1;  // marks next node YX as visited
 				}
 			}
+
+if (this.diagonal_allow == true && this.neighbours.length != this.num_neighbours ){  
+  var current_deltaNWSE = [];
+  var relative_delta;
+  var neighbours_array = nodes_to_array(this.neighbours, "self_YX")
+  for(var i=0;i<neighbours_array.length;++i){
+    relative_delta = [this.current_node_YX[0]-neighbours_array[i][0], this.current_node_YX[1]-neighbours_array[i][1]];
+    current_deltaNWSE.push(this.deltaNWSE[neighbours_array.indexOf(relative_delta)]);
+//current_delta.push contains array of valid this.deltaNWSE
+  }
+  for(var i=0;i<neighbours_array;++i){
+    if (current_deltaNWSE[i] == "NW"){
+      if(!(current_deltaNWSE.includes("N") && current_deltaNWSE.includes("W"))){
+        this.neighbours.splice(i, 1); //removes corner neighbour from array if horizontal or vertical neighbours are missing
+        continue;
+      }        
+    } 
+    else if(current_deltaNWSE[i] == "SW"){
+      if(!(current_deltaNWSE.includes("S") && current_deltaNWSE.includes("W"))){
+        this.neighbours.splice(i, 1); //removes corner neighbour from array if horizontal or vertical neighbours are missing
+        continue;
+      }  
+    } 
+    else if(current_deltaNWSE[i] == "SE"){
+      if(!(current_deltaNWSE.includes("S") && current_deltaNWSE.includes("E"))){
+        this.neighbours.splice(i, 1); //removes corner neighbour from array if horizontal or vertical neighbours are missing
+        continue;
+      }
+    } 
+    else if(current_deltaNWSE[i] == "NE"){
+      if(!(current_deltaNWSE.includes("N") && current_deltaNWSE.includes("E"))){
+        this.neighbours.splice(i, 1); //removes corner neighbour from array if horizontal or vertical neighbours are missing
+        continue;
+      }
+    } 
+  }
+}
+
+
+
+
+
+  
+
  // problem cannot push 2d array into object
 
       this.states.push({node_YX: this.current_node.self_YX, F_cost:null, G_cost:null, H_cost:null, queue: nodes_to_array(this.queue, "self_YX"), neighbours: nodes_to_array(this.neighbours, "self_YX")}); 
 
-      
+    
       // [node YX, FGH cost, array of queue, 2d array of current visited points, valid neighbours array]
+  if(this.current_node_YX == this.start){
+        console.log(this.neighbours);
+        console.log(this.neighbours[0].parent.self_YX);
+      }
+
+      /*this.neighbours of first node 
+[ Node {
+    f_value: null,
+    parent: Node { f_value: null, parent: null, self_YX: [Array] },
+    self_YX: [ 6, 7 ] },
+  Node {
+    f_value: null,
+    parent: Node { f_value: null, parent: null, self_YX: [Array] },
+    self_YX: [ 7, 6 ] },
+  Node {
+    f_value: null,
+    parent: Node { f_value: null, parent: null, self_YX: [Array] },
+    self_YX: [ 8, 7 ] },
+  Node {
+    f_value: null,
+    parent: Node { f_value: null, parent: null, self_YX: [Array] },
+    self_YX: [ 7, 8 ] } ]
+    */
 /*
    if (this.states.length == 4){
        const visited_canvas = document.getElementById("visited");
@@ -99,17 +168,13 @@ class BFS extends GridPathFinder{
      
     }
     */
-     
-
       
     
 		}
 	  if (this.path==null) console.log("path does not exist");
     return this.path
-      
-	}
-
-
+  
+  }
 
   final_state(){
     if(!this.start) return alert("haven't computed!");

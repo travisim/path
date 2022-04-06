@@ -62,6 +62,7 @@ class DFS extends GridPathFinder{
         this.path = path;
 				break;
 			}
+      
 			// NOTE, a node is only visited if all its neighbours have been added to the queue
 			this.neighbours = [];  // reset the neighbours for each new node
 			//console.log("next");
@@ -73,8 +74,9 @@ class DFS extends GridPathFinder{
         /* second check if visited */
 				if(this.visited[next_YX[0]][next_YX[1]]) continue; // if the neighbour has been visited, don't add it to queue
 				if (this.map[next_YX[0]][next_YX[1]]==1){  // if neighbour is passable
-					var next_node = new Node(null, this.current_node, next_YX);  // create a new node with said neighbour's details
+          var next_node = new Node(null, this.current_node, next_YX);  // create a new node with said neighbour's details
 					this.neighbours.push(next_node);  // add to neighbours
+  
 					this.queue.push(next_node);  // add to queue
           this.visited[this.current_node_YX[0]][this.current_node_YX[1]] = true;  // marks next node YX as visited
 				}
@@ -84,9 +86,6 @@ class DFS extends GridPathFinder{
       this.states.push({node_YX: this.current_node.self_YX, F_cost:null, G_cost:null, H_cost:null, queue: nodes_to_array(this.queue, "self_YX"), neighbours: nodes_to_array(this.neighbours, "self_YX")}); 
       // [node YX, FGH cost, array of queue, 2d array of current visited points, valid neighbours array]
 
-
-
-      
     
 		}
 	  if (this.path==null) console.log("path does not exist");
