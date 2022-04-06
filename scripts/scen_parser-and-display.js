@@ -23,8 +23,10 @@ they might not exist if the change is going from a file (hello.txt) to no file a
 		var contents = e.target.result;
 		
 		scen_array = scen_parser(contents);
-		//console.log(scen_array[scen_array.length-1]);
-		scen_show_selection(scen_array);
+		
+		scen_show_selection(scen_array);// shows start and goal
+    
+    
   });
         /* This is where we tell the FileReader to open and get the content of the file. This will fire the load event and get the function above to execute its code. */
   reader.readAsText(myFile);
@@ -68,14 +70,16 @@ function scen_show_selection(scen_array){
 		scen_select_elem.removeChild(child);
 		child = scen_select_elem.lastElementChild;
 	}
-	/* each iteration [ '9',
+	/* each iteration 
+  [ '9',
     'Berlin_0_512.map',
     '512',
     '512',
     '173',
     '435',
     '156',
-    '467','39.04163055' ]*/
+    '467',
+    '39.04163055' ]*/
 	for (var i=0;i<scen_array.length;++i){
 		var scen = scen_array[i]
 		var option = document.createElement("option");
@@ -109,42 +113,50 @@ function load_scen(){
 
 function displayScen(choice){
 
-  const start_canvas = document.getElementById("start");
-  const goal_canvas = document.getElementById("goal");
+  stop_animation_backend() //stop animation if scen changed halfway while still animating
  
 	window.map_start = [Number(scen_array[choice][5]),Number(scen_array[choice][4])];//  in Y, X
-	//drawCross([Number(scen_array[choice][5]),Number(scen_array[choice][4])], "start");
-  //drawPoint([Number(scen_array[choice][5]),Number(scen_array[choice][4])], "start");
-  display_canvas(start_canvas, "point",  [Number(scen_array[choice][5]),Number(scen_array[choice][4])], "rgb(150,150,150)");
+	draw_start_goal(window.map_start, "start", "rgb(150,150,150)")
+  //display_canvas("start", "point",  [Number(scen_array[choice][5]),Number(scen_array[choice][4])], "rgb(150,150,150)");
 	window.map_goal = [Number(scen_array[choice][7]), Number(scen_array[choice][6])];//  in Y, X
-	//drawCross( [Number(scen_array[choice][7]), Number(scen_array[choice][6])], "goal");
-  //drawPoint( [Number(scen_array[choice][7]), Number(scen_array[choice][6])], "goal");
-   display_canvas(goal_canvas, "point",  [Number(scen_array[choice][7]), Number(scen_array[choice][6])], "rgb(135,214,135)");
+	draw_start_goal(window.map_goal, "goal", "rgb(159,23,231")
+ //  display_canvas("goal", "point",  [Number(scen_array[choice][7]), Number(scen_array[choice][6])], "rgb(159,23,231");
+
+  clear_canvas("visited")
+  clear_canvas("neighbours")
+  clear_canvas("queue")
+  clear_canvas("current_YX")
+  clear_canvas("path")
+  
 	  
 }
 
 
+
+
 //takes in point[Y,X] and id of point to draw a cross. For ID, start=black  goal= reen
-function drawCross(point, id){
+/*
+function drawCross(id, point, display_colour){
   var canvas = document.getElementById(id);
   var context = canvas.getContext("2d");
  
-  var RGBcolour;
+  var RGBcolour = display_colour;
  
-  if (id  == "start") { RGBcolour = "rgb(150,150,150)" ; }
-  else if (id == "goal") { RGBcolour = "rgb(135,214,135)"; }
-
+   
   context.clearRect(0, 0, canvas.width, canvas.height); 
   //drawing the crosses from top left down and top right down
   context.beginPath();
  // context.arc(point[1], point[0], 7.5, 0, 2 * Math.PI);
-  context.moveTo(point[1]-5, point[0]-5);
-  context.lineTo(point[1]+5, point[0]+5);
-  context.moveTo(point[1]-5, point[0]+5);
-  context.lineTo(point[1]+5, point[0]-5);
+  var scaled_cross_length = Math.round(map_arr.length*0.2);
+  var x = scaled_cross_length;
+  context.moveTo(point[1]-x, point[0]-x);
+  context.lineTo(point[1]+x, point[0]+x);
+  context.moveTo(point[1]-x, point[0]+x);
+  context.lineTo(point[1]+x, point[0]-x);
   context.strokeStyle = RGBcolour;
   context.stroke();
 }
+*/
 /*
 function drawPoint(point, id){
   var canvas = document.getElementById(id);
@@ -162,3 +174,11 @@ function drawPoint(point, id){
 }
 */
 
+function draw_start_goal(point, id, display_colour){
+  if (window.map_arr.length < 64){
+    display_canvas(id, "point", point, display_colour);
+  }
+  else if (window.map_arr.length > 64){
+    display_canvas(id, "point_scaled_cross", point, display_colour);
+  }
+}

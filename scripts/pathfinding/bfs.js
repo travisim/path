@@ -62,7 +62,7 @@ class BFS extends GridPathFinder{
         }
 
         
-        this.states.push({node_YX: this.current_node.self_YX, F_cost:null, G_cost:null, H_cost:null, queue: nodes_to_array(this.queue, "self_YX"), neighbours: nodes_to_array(this.neighbours, "self_YX")}); 
+        this.states.push({node_YX: this.current_node.self_YX, F_cost:null, G_cost:null, H_cost:null, queue: nodes_to_array(this.queue, "self_YX"), neighbours: []}); 
         //creates array starting from start to goal
 				console.log("found");
         this.path = path;

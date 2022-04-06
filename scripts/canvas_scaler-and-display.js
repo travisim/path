@@ -74,20 +74,21 @@ function getObjectFitSize(
 
 
 
-function display_canvas(myCanvas, array_type, array_data, display_color, draw_zeroes = true, clear = true) {
+function display_canvas(canvas_id, array_type, array_data, display_color, draw_zeroes = true, clear = true) {
 
-  let ctx = myCanvas.getContext("2d");
+  let ctx = document.getElementById(canvas_id).getContext("2d");
   
   if (clear){
-    ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+     
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   }
-  
+ 
 
   ctx.fillStyle = display_color;
   ctx.strokeStyle = display_color
-  ctx.stroke();
+  
   if (array_data.length > 256) var pixelSize = 1.5;
-  else var pixelSize = 1.00;
+  else var pixelSize = 1.05;
   if (array_type == "1d") {
     for (var i = 0; i < array_data.length; ++i) {
       ctx.fillRect(array_data[i][1], array_data[i][0], pixelSize, pixelSize);
@@ -105,7 +106,29 @@ function display_canvas(myCanvas, array_type, array_data, display_color, draw_ze
   else if(array_type == "point"){//eg [ 8, 7 ]
     ctx.fillRect(array_data[1], array_data[0], pixelSize, pixelSize);
   }
+  else if(array_type == "point_scaled_cross"){
+  
+    var scaled_cross_length = Math.round(ctx.canvas.width*0.02);
+    var x = scaled_cross_length;
+     console.log(x)
+    //drawing the crosses from top left down and top right down
+    ctx.beginPath();
+   // context.arc(point[1], point[0], 7.5, 0, 2 * Math.PI);
+    ctx.moveTo(array_data[1]-x, array_data[0]-x);
+    ctx.lineTo(array_data[1]+x, array_data[0]+x);
+    ctx.moveTo(array_data[1]-x, array_data[0]+x);
+    ctx.lineTo(array_data[1]+x, array_data[0]-x);
+    ctx.strokeStyle = display_color;
+    ctx.stroke();
+  }
 }
+
+function clear_canvas(canvas_id){
+  let ctx = document.getElementById(canvas_id).getContext("2d");
+  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+}
+
+
 
 
 

@@ -1,4 +1,4 @@
-window.planners = [BFS,DFS];
+window.planners = [BFS,DFS,dijkstra];
 
 /* haven't build yet */
 //var planner_upload_elem = document.getElementById("planner-upload");
@@ -41,4 +41,11 @@ planner_select_elem.addEventListener("change", load_selected_planner);
 
 function load_selected_planner() {
   window.planner_choice = planner_select_elem.options[planner_select_elem.selectedIndex].value;
+  stop_animation_backend() //stop animation if scen changed halfway while still animating
+  clear_canvas("visited")
+  clear_canvas("neighbours")
+  clear_canvas("queue")
+  clear_canvas("current_YX")
+  clear_canvas("path")
+  //stop_animation_backend() //stop animation if planner changed halfway while still animating
 }

@@ -56,8 +56,8 @@ function map_display(map_array_var) {
   for scaling up, lines between pixel forms, solution: make lines thicker
   */
 
-  const myCanvas = document.getElementById("bg");
-  display_canvas(myCanvas, "2d", map_array_var, "#000000", true)
+ 
+  display_canvas("bg", "2d", map_array_var, "#000000", true)
 
 }
 

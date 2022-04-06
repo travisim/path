@@ -1,8 +1,8 @@
 
-class DFS extends GridPathFinder{
+class dijkstra extends GridPathFinder{
 
 	static get display_name(){
-		return "Depth-First Search (DFS)";
+		return "Dijkstra)";
 	}
 	
 	constructor(map, num_neighbours = 4, diagonal_allow = true, first_neighbour = "N", search_direction = "anticlockwise"){
@@ -13,11 +13,12 @@ class DFS extends GridPathFinder{
     // this method finds the path using the prescribed map, start & goal coordinates
     this.start = start; //in array form [y,x]  [0,0] is top left  [512,512] is bottom right
     this.goal = goal;
-    this.states = [];  // stores state of each loop
+    this.states = [];  // stores state of each loop cannot store 2d array of visited via push
 		this.queue = [];  // BFS uses a FIFO queue to order the sequence in which nodes are visited
 		this.neighbours = [];  // current cell's neighbours; only contains passable cells
     this.path = null;
 
+    
 		this.visited = [];  // 2d array to mark which cells have been visited
 		// generate empty 2d array
 		for(var i=0;i<this.map_height;++i){ // for each row
@@ -26,6 +27,9 @@ class DFS extends GridPathFinder{
         this.visited[i].push(0); // initialise an array of false	
       }
 		}
+    
+    
+    
 		
 		console.log("starting");
 		let start_node = new Node(null, null, this.start);
@@ -36,7 +40,7 @@ class DFS extends GridPathFinder{
 		
     
     while(this.queue.length){  // while there are still nodes left to visit
-			this.current_node = this.queue.pop(); // remove the first node in queue
+			this.current_node = this.queue.shift(); // remove the first node in queue
 			this.current_node_YX = this.current_node.self_YX; // first node in queue YX
 			/*if the current node has already been visited, we can move on to the next node*/
       /*console.log("current");
@@ -47,7 +51,7 @@ class DFS extends GridPathFinder{
 
       /* first check if visited */
 			if(this.visited[this.current_node_YX[0]][this.current_node_YX[1]]) continue; // if the current node has been visited, skip to next one in queue
-			this.visited[this.current_node_YX[0]][this.current_node_YX[1]] = true;  // marks current node YX as visited
+			this.visited[this.current_node_YX[0]][this.current_node_YX[1]] = 1;  // marks current node YX as visited
 			if(this.current_node_YX[0]==this.goal[0] && this.current_node_YX[1]==this.goal[1]){  // found the goal & exits the loop
         var path = [];
         var curr = this.current_node;
@@ -56,6 +60,8 @@ class DFS extends GridPathFinder{
           path.unshift(curr.self_YX);
           curr = curr.parent;
         }
+
+        
         this.states.push({node_YX: this.current_node.self_YX, F_cost:null, G_cost:null, H_cost:null, queue: nodes_to_array(this.queue, "self_YX"), neighbours: []}); 
         //creates array starting from start to goal
 				console.log("found");
@@ -76,15 +82,24 @@ class DFS extends GridPathFinder{
 					var next_node = new Node(null, this.current_node, next_YX);  // create a new node with said neighbour's details
 					this.neighbours.push(next_node);  // add to neighbours
 					this.queue.push(next_node);  // add to queue
-          this.visited[this.current_node_YX[0]][this.current_node_YX[1]] = true;  // marks next node YX as visited
+          this.visited[this.current_node_YX[0]][this.current_node_YX[1]] = 1;  // marks next node YX as visited
 				}
 			}
-  
+ // problem cannot push 2d array into object
 
       this.states.push({node_YX: this.current_node.self_YX, F_cost:null, G_cost:null, H_cost:null, queue: nodes_to_array(this.queue, "self_YX"), neighbours: nodes_to_array(this.neighbours, "self_YX")}); 
+
+      
       // [node YX, FGH cost, array of queue, 2d array of current visited points, valid neighbours array]
-
-
+/*
+   if (this.states.length == 4){
+       const visited_canvas = document.getElementById("visited");
+          display_canvas(visited_canvas, "2d", this.states[0].visited, "rgb(221,48,33)",false);  console.log(this.states[0].visited);
+     console.log(this.states[0].visited==this.states_visited[2]);
+     
+    }
+    */
+     
 
       
     
@@ -104,7 +119,6 @@ class DFS extends GridPathFinder{
     if(!this.start) return alert("haven't computed!");
     return this.states;
   }
-
 }
 
 //takes in a array of objects and returns a array of 1 property of the object
