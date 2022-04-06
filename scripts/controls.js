@@ -86,7 +86,7 @@ document.getElementById("stop_btn").addEventListener("click", stop_animation);
 document.getElementById("forward_btn").addEventListener("click", step_forward);
 
 
-
+//displays value of slider
 var slider = document.getElementById("animation_speed_slider");
 var output = document.getElementById("animation-speed-label");
 output.innerHTML = slider.value;
