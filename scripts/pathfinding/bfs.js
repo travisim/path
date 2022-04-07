@@ -5,7 +5,7 @@ class BFS extends GridPathFinder{
 		return "Breadth-First Search (BFS)";
 	}
 	
-	constructor(map, num_neighbours = 4, diagonal_allow = true, first_neighbour = "N", search_direction = "anticlockwise"){
+	constructor(map, num_neighbours = 8, diagonal_allow = true, first_neighbour = "N", search_direction = "anticlockwise"){
 		super(map, num_neighbours, diagonal_allow, first_neighbour, search_direction); 
 	}
 
@@ -28,7 +28,7 @@ class BFS extends GridPathFinder{
       }
 		}
     
-    
+    var k = 0
     
 		
 		console.log("starting");
@@ -88,16 +88,35 @@ class BFS extends GridPathFinder{
 				}
 			}
 
-if (this.diagonal_allow == true && this.neighbours.length != this.num_neighbours ){  
+if (this.diagonal_allow == true && this.num_neighbours == 8){  
+  
+ 
   var current_deltaNWSE = [];
-  var relative_delta;
+  var relative_delta = [];
   var neighbours_array = nodes_to_array(this.neighbours, "self_YX")
   for(var i=0;i<neighbours_array.length;++i){
-    relative_delta = [this.current_node_YX[0]-neighbours_array[i][0], this.current_node_YX[1]-neighbours_array[i][1]];
-    current_deltaNWSE.push(this.deltaNWSE[neighbours_array.indexOf(relative_delta)]);
+     var relative_delta = [this.current_node_YX[0]-neighbours_array[i][0], this.current_node_YX[1]-neighbours_array[i][1]];
+  
+
+
+    
+  for(var i=0;i<this.delta.length;++i){
+    if (String(this.delta[i]) == String(relative_delta)){
+      var index_of_current_YX_in_delta = i;
+      break;
+    }
+  }
+
+    var a = relative_delta;
+    var b = index_of_current_YX_in_delta;
+    var c = this.deltaNWSE[index_of_current_YX_in_delta];
+
+    
+    current_deltaNWSE.push(this.deltaNWSE[index_of_current_YX_in_delta]);
 //current_delta.push contains array of valid this.deltaNWSE
   }
-  for(var i=0;i<neighbours_array;++i){
+
+  for(var i=0;i<neighbours_array.length;++i){
     if (current_deltaNWSE[i] == "NW"){
       if(!(current_deltaNWSE.includes("N") && current_deltaNWSE.includes("W"))){
         this.neighbours.splice(i, 1); //removes corner neighbour from array if horizontal or vertical neighbours are missing
@@ -124,7 +143,8 @@ if (this.diagonal_allow == true && this.neighbours.length != this.num_neighbours
     } 
   }
 }
-
+  var delta = [[-1, 0], [-1, -1], [0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1]];
+var deltaNWSE = ["N",     "NW",      "W",    "SW",    "S",    "SE",   "E",   "NE"];
 
 
 
