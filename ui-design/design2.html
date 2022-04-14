@@ -18,6 +18,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
 		<link rel="stylesheet" media="screen and (min-device-width: 1080px)" href="design2.css" />
+
+
   </head>
 
   <body>
@@ -27,55 +29,82 @@
 		</div>
 		<div id="main" >
 			<div id="map-container" class="container">
-				<div id="map-upload" class="upload-div"></div>
-				<div id="map">
-					<canvas id="bg" height="512" width="512"></canvas><!-- loaded .map file -->
-					<canvas id="queue" height="512" width="512" ></canvas> <!-- neighbouring nodes  that are in the queue -->
-					<canvas id="visited" height="512" width="512" ></canvas>
-					<canvas id="path" height="512" width="512" ></canvas>
-					<canvas id="start" height="512" width="512"></canvas>
-					<canvas id="goal" height="512" width="512" ></canvas>
+				<div class="sub-container">
+					<div id="map_droparea" class="upload hidden overlay">
+					  <form class="my-form">
+					    <p>Drag map file here</p>
+					    <input type="file" id="map_input" class="file_input" accept=".map">
+					    <label class="btn" for="map_input">Select map file</label>
+					  </form>
+					</div>
+					<div id="map" class="interface overlay">
+						<canvas id="bg" height="512" width="512"></canvas>
+						<canvas id="queue" height="512" width="512" ></canvas>
+						<canvas id="visited" height="512" width="512" ></canvas>
+						<canvas id="path" height="512" width="512" ></canvas>
+						<canvas id="start" height="512" width="512"></canvas>
+						<canvas id="goal" height="512" width="512" ></canvas>
+					</div>
 				</div>
 			</div>
 			
 			<div id="controls-container" class="container">
-				<div id="scen-upload" class="upload-div"></div>
-				<div id="controls">
-					<div id="display-controls">
-						<button id="clear-btn" class="btn">Clear</button>
-						<button id="back-btn" class="btn">Back</button>
-						<button id="start_pause-btn" class="btn">Start/Pause</button>
-						<button id="forward-btn" class="btn">Forward</button>
-						<button id="end-btn" class="btn">End</button>
-						<button id="speed-btn" class="btn">Change speed</button>
+				<div class="sub-container">
+					<div id="scen_droparea" class="upload hidden overlay">
+					  <form class="my-form">
+					    <p>Drag scen file here</p>
+					    <input type="file" id="scen_input" class="file_input" accept=".scen">
+					    <label class="btn" for="scen_input">Select scen file</label>
+					  </form>
 					</div>
-					<div id="edit-controls">
-						<button id="detail-btn" class="btn">Detail</button>
-						<button id="upload-btn" class="btn">Upload</button>
-						<button id="upload-btn" class="btn">Edit Map</button>
-						<button id="upload-btn" class="btn">Input Scen</button>
-					</div>
-					<div class="select-pane">
-						<label for="scen" id="scen-label" class="select-label">Choose scenario:</label>
-						<select name="scen-select" size="1" id="scen-select" >
-							<option disabled="disabled">&nbsp&nbspX1&nbsp&nbsp&nbspY1&nbsp&nbsp&nbspX2&nbsp&nbsp&nbspY2&nbspOptimal Length</option>
-						</select>
-						
-						<p id="planner-label"></p>
-						<label for="planner" class="select-label">Choose planner:    </label>
-						<select name="planner-select" size="1" id="planner-select" ></select>
+					<div id="controls" class="interface overlay">
+						<div id="display_controls">
+							<button id="clear_btn" class="btn">
+								<object data="clear.svg" type="image/svg+xml"></object>
+							</button>
+							<button id="back_btn" class="btn">Back</button>
+							<button id="start_pause_btn" class="btn">Start/Pause</button>
+							<button id="forward_btn" class="btn">Forward</button>
+							<button id="end_btn" class="btn">End</button>
+						</div>
+						<div id="edit_controls">
+							<button id="detail_btn" class="btn">Detail</button>
+							<button id="upload_btn" class="btn">Upload</button>
+							<button id="edit_map_btn" class="btn">Edit Map</button>
+							<button id="input_btn" class="btn">Input Scen</button>
+						</div>
+						<div class="select_pane">
+							<label for="scen_select" class="select_label">Choose scenario:</label>
+							<select name="scen_select" size="1" id="scen_select" >
+								<option disabled="disabled">&nbsp&nbspX1&nbsp&nbsp&nbspY1&nbsp&nbsp&nbspX2&nbsp&nbsp&nbspY2&nbspOptimal Length</option>
+							</select>
+							
+							<p id="planner-label"></p>
+							<label for="planner_select" class="select_label">Choose planner:    </label>
+							<select name="planner_select" size="1" id="planner_select" ></select>
+						</div>
 					</div>
 				</div>
 			</div>
 
 				
 			<div id="info-container" class="container">
-				<div id="planner-upload" class="upload-div"></div>
-				<div id="info-pane"></div>
+				<div class="sub-container">
+					<div id="pathf_droparea" class="upload hidden overlay">
+					  <form class="my-form">
+					    <p>Drag pathf file here</p>
+					    <input type="file" id="pathf_input" class="file_input" accept=".pathf">
+					    <label class="btn" for="pathf_input">Select pathf file</label>
+					  </form>
+					</div>
+					<div id="info-pane" class="interface overlay"></div>
+				</div>
 			</div>
 			
 		</div>
+		<button id="return_btn" class="btn hidden">Return to Interface</button>
 		<script src="drag-and-drop.js"></script>
+		<script src="button.js"></script>
   </body>
   
 </html>

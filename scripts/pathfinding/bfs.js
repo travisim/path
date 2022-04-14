@@ -87,80 +87,85 @@ class BFS extends GridPathFinder{
           this.visited[this.current_node_YX[0]][this.current_node_YX[1]] = 1;  // marks next node YX as visited
 				}
 			}
-
-if (this.diagonal_allow == true && this.num_neighbours == 8){  
+      
+      if (this.diagonal_allow == true && this.num_neighbours == 8){  
+        var neighbours_deltaNWSE = [];
+        var relative_delta = [];
+        var neighbours_array = nodes_to_array(this.neighbours, "self_YX")
+        for(var i=0;i<neighbours_array.length;++i){
+          var relative_delta = [neighbours_array[i][0]-this.current_node_YX[0], neighbours_array[i][1]-this.current_node_YX[1]];
+        
+      
+      
+          
+          for(var j=0;j<this.delta.length;++j){
+            if (String(this.delta[j]) == String(relative_delta)){
+              var index_of_current_YX_in_delta = j;
+              break;
+            }
+          }
+          neighbours_deltaNWSE.push(this.deltaNWSE[index_of_current_YX_in_delta]);
+            
+          //current_delta.push contains array of valid this.deltaNWSE
+        }
+      
+        var surrounding_map_deltaNWSE = [];
+        for(var i=0;i<this.num_neighbours;++i){
+          var next_YX = [this.current_node_YX[0]+this.delta[i][0], this.current_node_YX[1]+this.delta[i][1]];
+				  if(next_YX[0]<0 || next_YX[0]>=this.map_height || next_YX[1]<0 || next_YX[1]>=this.map_width) continue;
+          if (this.map[next_YX[0]][next_YX[1]] == 1){
+            surrounding_map_deltaNWSE.push(this.deltaNWSE[i]);
+          }
+        }
+                
+        
+        for(var i = 0; i<this.neighbours.length; i++){ 
+          if (neighbours_deltaNWSE[i] == "NW"){ 
+            if(!(surrounding_map_deltaNWSE.includes("N") || surrounding_map_deltaNWSE.includes("W"))){
+              this.queue.splice(-(this.neighbours.length-i), 1); 
+              this.neighbours.splice(i, 1);
+         
+            }        
+          } 
+          else if(neighbours_deltaNWSE[i] == "SW"){
+            if(!(surrounding_map_deltaNWSE.includes("S") || surrounding_map_deltaNWSE.includes("W"))){
+              this.queue.splice(-(this.neighbours.length-i), 1); 
+              this.neighbours.splice(i, 1);
+              
+            }  
+          } 
+          else if(neighbours_deltaNWSE[i] == "SE"){
+            if(!(surrounding_map_deltaNWSE.includes("S") || surrounding_map_deltaNWSE.includes("E"))){
+              this.queue.splice(-(this.neighbours.length-i), 1); 
+              this.neighbours.splice(i, 1);
+             
+              
+            }
+          } 
+          else if(neighbours_deltaNWSE[i] == "NE"){
+            if(!(surrounding_map_deltaNWSE.includes("N") || surrounding_map_deltaNWSE.includes("E"))){
+              this.queue.splice(-(this.neighbours.length-i), 1); 
+              this.neighbours.splice(i, 1);
+       
   
- 
-  var current_deltaNWSE = [];
-  var relative_delta = [];
-  var neighbours_array = nodes_to_array(this.neighbours, "self_YX")
-  for(var i=0;i<neighbours_array.length;++i){
-     var relative_delta = [this.current_node_YX[0]-neighbours_array[i][0], this.current_node_YX[1]-neighbours_array[i][1]];
+              
+            }
+          } 
+        }
+      }
+      /*
+for(var i=0;i<this.neighbours.length;++i){
+  this.queue.push(this.neighbours[i]);
   
-
-
-    
-  for(var i=0;i<this.delta.length;++i){
-    if (String(this.delta[i]) == String(relative_delta)){
-      var index_of_current_YX_in_delta = i;
-      break;
-    }
-  }
-
-    var a = relative_delta;
-    var b = index_of_current_YX_in_delta;
-    var c = this.deltaNWSE[index_of_current_YX_in_delta];
-
-    
-    current_deltaNWSE.push(this.deltaNWSE[index_of_current_YX_in_delta]);
-//current_delta.push contains array of valid this.deltaNWSE
-  }
-
-  for(var i=0;i<neighbours_array.length;++i){
-    if (current_deltaNWSE[i] == "NW"){
-      if(!(current_deltaNWSE.includes("N") && current_deltaNWSE.includes("W"))){
-        this.neighbours.splice(i, 1); //removes corner neighbour from array if horizontal or vertical neighbours are missing
-        continue;
-      }        
-    } 
-    else if(current_deltaNWSE[i] == "SW"){
-      if(!(current_deltaNWSE.includes("S") && current_deltaNWSE.includes("W"))){
-        this.neighbours.splice(i, 1); //removes corner neighbour from array if horizontal or vertical neighbours are missing
-        continue;
-      }  
-    } 
-    else if(current_deltaNWSE[i] == "SE"){
-      if(!(current_deltaNWSE.includes("S") && current_deltaNWSE.includes("E"))){
-        this.neighbours.splice(i, 1); //removes corner neighbour from array if horizontal or vertical neighbours are missing
-        continue;
-      }
-    } 
-    else if(current_deltaNWSE[i] == "NE"){
-      if(!(current_deltaNWSE.includes("N") && current_deltaNWSE.includes("E"))){
-        this.neighbours.splice(i, 1); //removes corner neighbour from array if horizontal or vertical neighbours are missing
-        continue;
-      }
-    } 
-  }
 }
-  var delta = [[-1, 0], [-1, -1], [0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1]];
-var deltaNWSE = ["N",     "NW",      "W",    "SW",    "S",    "SE",   "E",   "NE"];
-
-
-
-
-  
-
+*/
  // problem cannot push 2d array into object
 
       this.states.push({node_YX: this.current_node.self_YX, F_cost:null, G_cost:null, H_cost:null, queue: nodes_to_array(this.queue, "self_YX"), neighbours: nodes_to_array(this.neighbours, "self_YX")}); 
 
     
       // [node YX, FGH cost, array of queue, 2d array of current visited points, valid neighbours array]
-  if(this.current_node_YX == this.start){
-        console.log(this.neighbours);
-        console.log(this.neighbours[0].parent.self_YX);
-      }
+
 
       /*this.neighbours of first node 
 [ Node {

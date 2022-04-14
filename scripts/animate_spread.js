@@ -29,7 +29,7 @@ function start_animation() {
     if (window.u < all_states.length){
       if (window.stop == 0){
         display_canvas("queue", "1d", all_states[window.u].queue, "rgb(116,250,76)")
-        display_canvas("neighbours", "1d", all_states[window.u].neighbours, "rgb(30,73,25)")
+      //  display_canvas("neighbours", "1d", all_states[window.u].neighbours, "rgb(30,73,25)")
         display_canvas("current_YX", "point",  all_states[window.u].node_YX, "rgb(52,119,234)")
         display_canvas("visited","point",  all_states[window.u].node_YX, "rgb(221,48,33)", true ,false)
       
@@ -90,11 +90,11 @@ function step_forward(){
 
   all_states = window.planner.all_states();
 
-
-  display_canvas("queue", "1d", all_states[window.u+1].queue, "rgb(116,250,76)")
-  display_canvas("neighbours", "1d", all_states[window.u+1].neighbours, "rgb(30,73,25)")
-  display_canvas("current_YX", "point",  all_states[window.u+1].node_YX, "rgb(52,119,234)")
-  display_canvas("visited", "point",  all_states[window.u+1].node_YX, "rgb(221,48,33)", true ,false)
+  window.u++
+  display_canvas("queue", "1d", all_states[window.u].queue, "rgb(116,250,76)")
+  display_canvas("neighbours", "1d", all_states[window.u].neighbours, "rgb(30,73,25)")
+  display_canvas("current_YX", "point",  all_states[window.u].node_YX, "rgb(52,119,234)")
+  display_canvas("visited", "point",  all_states[window.u].node_YX, "rgb(221,48,33)", true ,false)
   window.u++
 }
 
@@ -109,14 +109,15 @@ function step_back(){
   all_states = window.planner.all_states();
 
   if (end_animation = false){
-    display_canvas("queue", "1d", all_states[window.u-1].queue, "rgb(116,250,76)")
-    display_canvas("neighbours", "1d", all_states[window.u-1].neighbours, "rgb(30,73,25)")
-    display_canvas("current_YX", "point",  all_states[window.u-1].node_YX, "rgb(52,119,234)")
-    display_canvas("visited", "point",  all_states[window.u].node_YX, "rgb(255,255,255)", true ,false)
-    window.u--
+     window.u--
+    display_canvas("queue", "1d", all_states[window.u].queue, "rgb(116,250,76)")
+    display_canvas("neighbours", "1d", all_states[window.u].neighbours, "rgb(30,73,25)")
+    display_canvas("current_YX", "point",  all_states[window.u].node_YX, "rgb(52,119,234)")
+    display_canvas("visited", "point",  all_states[window.u+1].node_YX, "rgb(255,255,255)", true ,false)
+    
   }
   else if (end_animation = true){
-    window.u--
+    window.u = window.u-2
     display_canvas("queue", "1d", all_states[window.u-1].queue, "rgb(116,250,76)")
     display_canvas("neighbours", "1d", all_states[window.u-1].neighbours, "rgb(30,73,25)")
     display_canvas("current_YX", "point",  all_states[window.u-1].node_YX, "rgb(52,119,234)")

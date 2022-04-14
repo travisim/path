@@ -19,9 +19,15 @@
 		<link rel="stylesheet" media="screen and (min-device-width: 1080px)" href="test.css" />
 	</head>
 	<body>
-		<div class="testdiv"></div>
-		<div class="testdiv"></div>
-		<div class="testdiv"></div>
+		<div id="drop-area">
+		  <form class="my-form">
+		    <p>Upload multiple files with the file dialog or by dragging and dropping images onto the dashed region</p>
+		    <input type="file" id="fileElem" multiple accept="image/*" onchange="handleFiles(this.files)">
+		    <label class="button" for="fileElem">Select some files</label>
+		  </form>
+		</div>
+		<div id="gallery"></div>
+		<script src="test.js"></script>
 	</body>
 
 </html>
