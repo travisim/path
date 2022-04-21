@@ -2,7 +2,7 @@ window.planners = [BFS,DFS,dijkstra];
 
 /* haven't build yet */
 //var planner_upload_elem = document.getElementById("planner-upload");
-var planner_select_elem = document.getElementById("planner-select");
+var planner_select_elem = document.getElementById("planner_select");
 /*
 function add_planner(planner=null){
   if(planner != null){

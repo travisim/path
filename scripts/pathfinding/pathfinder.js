@@ -27,9 +27,9 @@ class GridPathFinder{
 		
 		this.first_index = deltaNWSE.indexOf(this.first_neighbour);
 		this.deltaNWSE = deltaNWSE.slice(this.first_index).concat(deltaNWSE.slice(0, this.first_index));
-    
 		this.delta = delta.slice(this.first_index).concat(delta.slice(0, this.first_index));
- 
+
+    
 	}
 }
 

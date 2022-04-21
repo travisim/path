@@ -67,25 +67,15 @@ function getObjectFitSize(
 }
 
 
-
-
-
-
-
-
-
 function display_canvas(canvas_id, array_type, array_data, display_color, draw_zeroes = true, clear = true) {
 
   let ctx = document.getElementById(canvas_id).getContext("2d");
   
   if (clear){
-     
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   }
- 
-
   ctx.fillStyle = display_color;
-  ctx.strokeStyle = display_color
+  ctx.strokeStyle = display_color;
   
   if (array_data.length > 256) var pixelSize = 1.5;
   else var pixelSize = 1.05;
@@ -128,7 +118,13 @@ function clear_canvas(canvas_id){
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 }
 
-
+function clear_pixel(canvas_id,yx_array){
+  let ctx = document.getElementById(canvas_id).getContext("2d");
+  if (ctx.canvas.width > 256) var pixelSize = 1.5;
+  else var pixelSize = 1.05;
+  ctx.clearRect(yx_array[1], yx_array[0], 1.05, 1.05);
+  
+}
 
 
 

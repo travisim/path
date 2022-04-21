@@ -4,7 +4,7 @@ html, body{
 	margin: 0;
 	border: 0;
 	padding: 0;
-	
+	font-family: sans-serif;
 	background-color: #d1cfe2 ;
   background-size: cover;
 }
@@ -22,8 +22,8 @@ html, body{
 }
 
 #main{
-	width: 1136px;
-	height: 510px;
+	width: 1172px;
+	height: 622px;
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
@@ -35,7 +35,7 @@ html, body{
 .container{
 	display: inline-block;
 	vertical-align:middle;
-	height: 500px;
+	height: 612px;
 	width: 300px;
 	border: 3px solid black;
 	margin: 2px;
@@ -43,11 +43,10 @@ html, body{
 }
 
 #map-container{
-	width: 500px;
+	width: 512px;
 }
 
 .sub-container{
-	display: grid;
   overflow: hidden;
 	width: 100%;
 	height: 100%;
@@ -55,22 +54,28 @@ html, body{
   align-items: center;
 }
 
-.overlay{
-	grid-column: 1;
-  grid-row: 1;
+.interface{
 	width: 100%;
-	height: 100%;
-  overflow: hidden;
+	height: 512px;
 }
+
+canvas{
+	height: 512px;
+	width: 512px;
+	position: absolute;
+}
+
+
 
 /* drag and drop css */
 
 .upload{
 	width: 95%;
-	height: 95%;
+	height: 70px;
 	z-index: 99;
-	
-	border: 2px dashed #ccc;
+	margin: 0 auto;
+	padding: 5px;
+	border: 2px dashed #555;
   border-radius: 20px;
 	font-family: sans-serif;
 }
@@ -85,16 +90,69 @@ html, body{
 
 .btn {
   display: inline-block;
-  padding: 10px;
+	flex-grow: 1;
+	margin: 2px;
+  padding: 2px;
+  background: #bcbacb;
+  cursor: pointer;
+  border-radius: 5px;
+  border: 1px solid #bcbacb;
+	height: 52px;
+	width: 52px;
+}
+.btn:hover {
+  background: #d19b6d;
+	transform: scale(1.2) perspective(1px);
+}
+
+.icon{
+	height: 30px;
+	display: block;
+	margin: auto;
+}
+
+.file_input{
+	display: none;
+}
+
+.flex-row{
+	display: flex;
+	justify-content: center;
+	flex-direction: row;
+	padding: 5px;
+}
+
+.upload-btn{
+	display: inline-block;
   background: #ccc;
   cursor: pointer;
   border-radius: 5px;
   border: 1px solid #ccc;
 }
-.btn:hover {
-  background: #ddd;
+
+.grid-overlay{
+	display: grid;
 }
 
-.file_input{
-	display: none;
+.overlay{
+	grid-column: 1;
+  grid-row: 1;
+}
+
+.label_centered{
+	display: block;
+	margin: 0 auto;
+	text-align: center;
+}
+
+.slider{
+	display: inline-block;
+	margin: 0px 10px;
+	flex-basis: 100%;
+}
+
+.select-dropdown{
+	margin: 0 auto;
+	display: block;
+	width: 95%;
 }

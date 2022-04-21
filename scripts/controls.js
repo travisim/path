@@ -1,3 +1,4 @@
+
 // window.map_start;
 // window.map_goal;
 // window.map_arr;
@@ -17,9 +18,6 @@ function compute_path(){
 	console.log("computing path...")
 	window.path = window.planner.search(window.map_start, window.map_goal); 
   reset_animation_progress();
-  
- 
-
 
 }
 
@@ -49,7 +47,7 @@ function display_path(){
 
 
  // display_canvas("visited", "2d", visited, "#E7EAB5", false);
-    display_canvas("path", "1d", path, "#E2C2B9");
+  display_canvas("path", "1d", path, "#E2C2B9");
   
   /*var queue_canvas = document.getElementById("queue");
 	queue_canvas.getContext("2d").clearRect(0, 0, queue_canvas.width, queue_canvas.height); // 0 0 512 512
@@ -70,21 +68,31 @@ function display_path(){
 	
 }
 
+document.getElementById("clear_btn").addEventListener("click", clear_animation);
+
 document.getElementById("back_btn").addEventListener("click", step_back);
 
+//document.getElementById("start_btn").addEventListener("click", start_animation); // moved to button.js
 
+//document.getElementById("stop_btn").addEventListener("click", stop_animation); // moved to button.js
 
-document.getElementById("start_btn").addEventListener("click", start_animation);
+document.getElementById("start_pause_btn").addEventListener("click", toggleAnimation);
 
+function toggleAnimation(){
+	document.getElementById("start_icon").classList.toggle("hidden");
+	document.getElementById("pause_icon").classList.toggle("hidden");
+	// do other things to map
 
-	
-
-document.getElementById("stop_btn").addEventListener("click", stop_animation);
-
+	if(document.getElementById("start_icon").classList.contains("hidden")){
+		start_animation();
+	}
+	else{
+		stop_animation();
+	}
+}
 
 
 document.getElementById("forward_btn").addEventListener("click", step_forward);
-
 
 //displays value of slider
 var slider = document.getElementById("animation_speed_slider");
@@ -94,8 +102,20 @@ slider.oninput = function() {
   output.innerHTML = slider.value;
 }
 
+document.getElementById("end_btn").addEventListener("click", jump_to_end);
 
+document.getElementById("detail_btn").addEventListener("click", toggleMapDetail);
 
+function toggleMapDetail(){
+	document.getElementById("map_detailed_icon").classList.toggle("hidden");
+	document.getElementById("map_simple_icon").classList.toggle("hidden");
+	// do other things to map
+}
 
-
-
+function toggleClass(elementClass, toggleClass){
+	let elems = document.getElementsByClassName(elementClass);
+	for(let i=0;i<elems.length;++i){
+		let el = elems[i];
+		el.classList.toggle(toggleClass);
+	}
+}

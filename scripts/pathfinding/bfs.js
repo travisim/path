@@ -13,11 +13,11 @@ class BFS extends GridPathFinder{
     // this method finds the path using the prescribed map, start & goal coordinates
     this.start = start; //in array form [y,x]  [0,0] is top left  [512,512] is bottom right
     this.goal = goal;
-    this.states = [];  // stores state of each loop cannot store 2d array of visited via push
 		this.queue = [];  // BFS uses a FIFO queue to order the sequence in which nodes are visited
 		this.neighbours = [];  // current cell's neighbours; only contains passable cells
     this.path = null;
-
+    this.states = [];
+    this.steps = [];
     
 		this.visited = [];  // 2d array to mark which cells have been visited
 		// generate empty 2d array
@@ -26,20 +26,16 @@ class BFS extends GridPathFinder{
 			for	(var j=0;j<this.map_width;++j){		
         this.visited[i].push(0); // initialise an array of false	
       }
-		}
-    
-    var k = 0
-    
-		
+		}		
 		console.log("starting");
 		let start_node = new Node(null, null, this.start);
 		//var found = false;  // once the program exits the while-loop, this is the variable which determines if the endpoint has been found
     /* ^ deprecated, used a this.path variable to assign */
 		this.queue.push(start_node);  // begin with the start; add starting node to rear of []
     //---------------------checks if visited 2d array has been visited
-		
     
     while(this.queue.length){  // while there are still nodes left to visit
+      
 			this.current_node = this.queue.shift(); // remove the first node in queue
 			this.current_node_YX = this.current_node.self_YX; // first node in queue YX
 			/*if the current node has already been visited, we can move on to the next node*/
@@ -55,21 +51,19 @@ class BFS extends GridPathFinder{
 			if(this.current_node_YX[0]==this.goal[0] && this.current_node_YX[1]==this.goal[1]){  // found the goal & exits the loop
         var path = [];
         var curr = this.current_node;
+        // retraces the entire parent tree until start is found
         while (curr!=null){
           console.log(curr.self_YX); 
           path.unshift(curr.self_YX);
           curr = curr.parent;
         }
 
-        
         this.states.push({node_YX: this.current_node.self_YX, F_cost:null, G_cost:null, H_cost:null, queue: nodes_to_array(this.queue, "self_YX"), neighbours: []}); 
         //creates array starting from start to goal
 				console.log("found");
         this.path = path;
 				break;
 			}
-      
-     
 			// NOTE, a node is only visited if all its neighbours have been added to the queue
 			this.neighbours = [];  // reset the neighbours for each new node
 			//console.log("next");
@@ -77,17 +71,17 @@ class BFS extends GridPathFinder{
 			for(var i=0;i<this.num_neighbours;++i){
 				var next_YX = [this.current_node_YX[0]+this.delta[i][0], this.current_node_YX[1]+this.delta[i][1]];  // calculate the coordinates for the new neighbour
 				//console.log(next_YX);
-				if(next_YX[0]<0 || next_YX[0]>=this.map_height || next_YX[1]<0 || next_YX[1]>=this.map_width) continue;
+				if(next_YX[0]<0 || next_YX[0]>=this.map_height || next_YX[1]<0 || next_YX[1]>=this.map_width) continue;  // if the neighbour not within map borders, don't add it to queue
         /* second check if visited */
 				if(this.visited[next_YX[0]][next_YX[1]]) continue; // if the neighbour has been visited, don't add it to queue
-				if (this.map[next_YX[0]][next_YX[1]]==1){  // if neighbour is passable
+				if (this.map[next_YX[0]][next_YX[1]]==1){  // if neighbour is passable & not visited
 					var next_node = new Node(null, this.current_node, next_YX);  // create a new node with said neighbour's details
 					this.neighbours.push(next_node);  // add to neighbours
 					this.queue.push(next_node);  // add to queue
-          this.visited[this.current_node_YX[0]][this.current_node_YX[1]] = 1;  // marks next node YX as visited
 				}
 			}
-      
+      this.visited[this.current_node_YX[0]][this.current_node_YX[1]] = 1;  // marks current node YX as visited
+      /* extra code to check if diagonal blocking */
       if (this.diagonal_allow == true && this.num_neighbours == 8){  
         var neighbours_deltaNWSE = [];
         var relative_delta = [];
@@ -95,9 +89,6 @@ class BFS extends GridPathFinder{
         for(var i=0;i<neighbours_array.length;++i){
           var relative_delta = [neighbours_array[i][0]-this.current_node_YX[0], neighbours_array[i][1]-this.current_node_YX[1]];
         
-      
-      
-          
           for(var j=0;j<this.delta.length;++j){
             if (String(this.delta[j]) == String(relative_delta)){
               var index_of_current_YX_in_delta = j;
@@ -108,7 +99,7 @@ class BFS extends GridPathFinder{
             
           //current_delta.push contains array of valid this.deltaNWSE
         }
-      
+
         var surrounding_map_deltaNWSE = [];
         for(var i=0;i<this.num_neighbours;++i){
           var next_YX = [this.current_node_YX[0]+this.delta[i][0], this.current_node_YX[1]+this.delta[i][1]];
@@ -117,88 +108,46 @@ class BFS extends GridPathFinder{
             surrounding_map_deltaNWSE.push(this.deltaNWSE[i]);
           }
         }
-                
-        
+
         for(var i = 0; i<this.neighbours.length; i++){ 
           if (neighbours_deltaNWSE[i] == "NW"){ 
             if(!(surrounding_map_deltaNWSE.includes("N") || surrounding_map_deltaNWSE.includes("W"))){
               this.queue.splice(-(this.neighbours.length-i), 1); 
               this.neighbours.splice(i, 1);
-         
             }        
           } 
           else if(neighbours_deltaNWSE[i] == "SW"){
             if(!(surrounding_map_deltaNWSE.includes("S") || surrounding_map_deltaNWSE.includes("W"))){
               this.queue.splice(-(this.neighbours.length-i), 1); 
               this.neighbours.splice(i, 1);
-              
             }  
           } 
           else if(neighbours_deltaNWSE[i] == "SE"){
             if(!(surrounding_map_deltaNWSE.includes("S") || surrounding_map_deltaNWSE.includes("E"))){
               this.queue.splice(-(this.neighbours.length-i), 1); 
               this.neighbours.splice(i, 1);
-             
-              
             }
           } 
           else if(neighbours_deltaNWSE[i] == "NE"){
             if(!(surrounding_map_deltaNWSE.includes("N") || surrounding_map_deltaNWSE.includes("E"))){
               this.queue.splice(-(this.neighbours.length-i), 1); 
               this.neighbours.splice(i, 1);
-       
-  
-              
             }
           } 
         }
       }
-      /*
-for(var i=0;i<this.neighbours.length;++i){
-  this.queue.push(this.neighbours[i]);
-  
-}
-*/
- // problem cannot push 2d array into object
+
+      // problem cannot push 2d array into object
 
       this.states.push({node_YX: this.current_node.self_YX, F_cost:null, G_cost:null, H_cost:null, queue: nodes_to_array(this.queue, "self_YX"), neighbours: nodes_to_array(this.neighbours, "self_YX")}); 
 
-    
+   
       // [node YX, FGH cost, array of queue, 2d array of current visited points, valid neighbours array]
 
-
-      /*this.neighbours of first node 
-[ Node {
-    f_value: null,
-    parent: Node { f_value: null, parent: null, self_YX: [Array] },
-    self_YX: [ 6, 7 ] },
-  Node {
-    f_value: null,
-    parent: Node { f_value: null, parent: null, self_YX: [Array] },
-    self_YX: [ 7, 6 ] },
-  Node {
-    f_value: null,
-    parent: Node { f_value: null, parent: null, self_YX: [Array] },
-    self_YX: [ 8, 7 ] },
-  Node {
-    f_value: null,
-    parent: Node { f_value: null, parent: null, self_YX: [Array] },
-    self_YX: [ 7, 8 ] } ]
-    */
-/*
-   if (this.states.length == 4){
-       const visited_canvas = document.getElementById("visited");
-          display_canvas(visited_canvas, "2d", this.states[0].visited, "rgb(221,48,33)",false);  console.log(this.states[0].visited);
-     console.log(this.states[0].visited==this.states_visited[2]);
-     
-    }
-    */
-      
-    
 		}
 	  if (this.path==null) console.log("path does not exist");
-    return this.path
-  
+    document.getElementById("search_progress_slider").max = this.states.length;
+    return this.path;
   }
 
   final_state(){

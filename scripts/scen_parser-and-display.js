@@ -1,39 +1,6 @@
 
 var scen_array = [];
 
-/*This creates a global variable with the HTML element scen-input in it. */
-var scen_input = document.getElementById("scen-input"); 
-    
-/* Here we tell to our input element to do something special when his value changes.
-A change will occur for example when a user will chose a file.*/
-scen_input.addEventListener("change", function () {
-/* First thing we do is checking if this.files exists and this.files[0] aswell.
-they might not exist if the change is going from a file (hello.txt) to no file at all  */
-  if (this.files && this.files[0]) {
-  /* Since we can chose more than one file by shift clicking multiple files, here we ensure that we only take the first one set. */
-  var myFile = this.files[0];
-  /* FileReader is the Object in the JavaScript standard that has the capabilities to read and get informations about files (content, size, creation date, etc) */
-  var reader = new FileReader();
-  /* Here we give the instruction for the FileReader we created, we tell it that when it loads, it should do some stuff. The load event is fired when the FileReader reads a file. In our case this hasn't happened yet, but as soon as it will this function will fire. */
-  reader.addEventListener("load", function (e) {
-    /* What we do here is take the result of the fileReader and put it inside our output div to display it to the users. This is where you could do your scrambling and maybe save the result in a variable ? */
-		
-    // NOTE: event.target point to FileReader 
-    // insert code mniupulating string here
-		var contents = e.target.result;
-		
-		scen_array = scen_parser(contents);
-		
-		scen_show_selection(scen_array);// shows start and goal
-    
-    
-  });
-        /* This is where we tell the FileReader to open and get the content of the file. This will fire the load event and get the function above to execute its code. */
-  reader.readAsText(myFile);
-
-  }
-});
-
 function scen_parser(contents){
 	/*Bucket	map	map width	map height	start x-coordinate	start y-coordinate	goal x-coordinate	goal y-coordinate	optimal length*/
 	// Split by line
@@ -60,11 +27,11 @@ function scen_parser(contents){
 }
 
 function scen_show_selection(scen_array){
-	var scen_label_elem = document.getElementById("scen-label");
+	var scen_label_elem = document.getElementById("scen_label");
 	scen_label_elem.innerHTML = `Choose scenario for ${scen_array[0][1]}. Map   Width: ${scen_array[0][2]} Map Height: ${scen_array[0][3]}`;	
 	//display first scene as default at index 0
   displayScen(0);
-	var scen_select_elem = document.getElementById("scen-select");
+	var scen_select_elem = document.getElementById("scen_select");
 	var child = scen_select_elem.lastElementChild; 
 	while (child) {
 		scen_select_elem.removeChild(child);
@@ -101,7 +68,7 @@ function scen_show_selection(scen_array){
 }
 
 /*This creates a global variable with the HTML element scen_select in it. */
-var scen_select = document.getElementById("scen-select"); 
+var scen_select = document.getElementById("scen_select"); 
 
 scen_select.addEventListener("change", load_scen);
 //used the onclick of the option in select instead of event listener as there maybe other changes
