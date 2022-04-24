@@ -5,8 +5,8 @@ class BFS extends GridPathFinder{
 		return "Breadth-First Search (BFS)";
 	}
 	
-	constructor(map, num_neighbours = 8, diagonal_allow = true, first_neighbour = "N", search_direction = "anticlockwise"){
-		super(map, num_neighbours, diagonal_allow, first_neighbour, search_direction); 
+	constructor(num_neighbours = 8, diagonal_allow = true, first_neighbour = "N", search_direction = "anticlockwise"){
+		super(num_neighbours, diagonal_allow, first_neighbour, search_direction); 
 	}
 
   search(start, goal){
@@ -16,17 +16,15 @@ class BFS extends GridPathFinder{
 		this.queue = [];  // BFS uses a FIFO queue to order the sequence in which nodes are visited
 		this.neighbours = [];  // current cell's neighbours; only contains passable cells
     this.path = null;
-    this.states = [];
     this.steps = [];
+
+    this.queue_matrix = Array.from({length: this.map_height}, ()=>new Array(this.map_width).fill(0));  // initialise a matrix of 0s (zeroes), height x width
+
+    this.searched = false;
     
-		this.visited = [];  // 2d array to mark which cells have been visited
+		this.visited = Array.from({length: this.map_height}, ()=>new Array(this.map_width).fill(0));  // initialise a matrix of 0s (zeroes), height x width
 		// generate empty 2d array
-		for(var i=0;i<this.map_height;++i){ // for each row
-			this.visited.push([]); // create an empty array
-			for	(var j=0;j<this.map_width;++j){		
-        this.visited[i].push(0); // initialise an array of false	
-      }
-		}		
+
 		console.log("starting");
 		let start_node = new Node(null, null, this.start);
 		//var found = false;  // once the program exits the while-loop, this is the variable which determines if the endpoint has been found
@@ -35,7 +33,8 @@ class BFS extends GridPathFinder{
     //---------------------checks if visited 2d array has been visited
     
     while(this.queue.length){  // while there are still nodes left to visit
-      
+      if(this.current_node_YX)
+        this.prev_node_YX = this.current_node_YX
 			this.current_node = this.queue.shift(); // remove the first node in queue
 			this.current_node_YX = this.current_node.self_YX; // first node in queue YX
 			/*if the current node has already been visited, we can move on to the next node*/
@@ -44,10 +43,26 @@ class BFS extends GridPathFinder{
       console.log("visited?")
       if(this.visited[this.current_node_YX[0]][this.current_node_YX[1]]) console.log("true");
       else console.log("false");*/
-
+      
+      let step = new UIStep();
+      step.add_action(`ec`, `current_YX`);
+      step.add_action(`ec`, `neighbours`);
+      step.add_action(`dp`, `current_YX`, this.current_node_YX);
+      step.add_action(`dp`, `visited`, this.current_node_YX);
+      step.add_inverse(`ec`, `current_YX`, this.current_node_YX);
+      step.add_inverse(`ep`, `visited`, this.current_node_YX);
+      if(this.prev_node_YX){
+        step.add_inverse(`dp`, `current_YX`, this.prev_node_YX);
+        this.neighbours.forEach(neighbour=>{
+          step.add_inverse(`dp`, `neighbours`, neighbour.self_YX);
+        });
+      }
+      this.steps.push(step);
+      
       /* first check if visited */
 			if(this.visited[this.current_node_YX[0]][this.current_node_YX[1]]) continue; // if the current node has been visited, skip to next one in queue
-			this.visited[this.current_node_YX[0]][this.current_node_YX[1]] = 1;  // marks current node YX as visited
+
+      this.visited[this.current_node_YX[0]][this.current_node_YX[1]] = 1;  // marks current node YX as visited
 			if(this.current_node_YX[0]==this.goal[0] && this.current_node_YX[1]==this.goal[1]){  // found the goal & exits the loop
         var path = [];
         var curr = this.current_node;
@@ -58,30 +73,85 @@ class BFS extends GridPathFinder{
           curr = curr.parent;
         }
 
-        this.states.push({node_YX: this.current_node.self_YX, F_cost:null, G_cost:null, H_cost:null, queue: nodes_to_array(this.queue, "self_YX"), neighbours: []}); 
         //creates array starting from start to goal
 				console.log("found");
         this.path = path;
+        let step = new UIStep();
+        step.add_action(`dc`, `path`, this.path, `1d`, false);
+        step.add_inverse(`ec`, `path`);
+        this.steps.push(step);
 				break;
 			}
 			// NOTE, a node is only visited if all its neighbours have been added to the queue
 			this.neighbours = [];  // reset the neighbours for each new node
 			//console.log("next");
 			/* iterates through the 4 or 8 neighbours and adds the valid (passable & within boundaries of map) ones to the queue & neighbour array */
+      var surrounding_map_deltaNWSE = [];
+      for(var i=0;i<this.num_neighbours;++i){
+        var next_YX_temp = [this.current_node_YX[0]+this.delta[i][0], this.current_node_YX[1]+this.delta[i][1]];
+        if(next_YX_temp[0]<0 || next_YX_temp[0]>=this.map_height || next_YX_temp[1]<0 || next_YX_temp[1]>=this.map_width) continue;  
+        if (this.map[next_YX_temp[0]][next_YX_temp[1]] == 1){
+                surrounding_map_deltaNWSE.push(this.deltaNWSE[i]);
+        }
+      }
+      
 			for(var i=0;i<this.num_neighbours;++i){
 				var next_YX = [this.current_node_YX[0]+this.delta[i][0], this.current_node_YX[1]+this.delta[i][1]];  // calculate the coordinates for the new neighbour
 				//console.log(next_YX);
 				if(next_YX[0]<0 || next_YX[0]>=this.map_height || next_YX[1]<0 || next_YX[1]>=this.map_width) continue;  // if the neighbour not within map borders, don't add it to queue
         /* second check if visited */
 				if(this.visited[next_YX[0]][next_YX[1]]) continue; // if the neighbour has been visited, don't add it to queue
+       
 				if (this.map[next_YX[0]][next_YX[1]]==1){  // if neighbour is passable & not visited
+          if (this.diagonal_allow == true && this.num_neighbours == 8){
+           
+         
+              if (this.deltaNWSE[i] == "NW"){ 
+                if(!(surrounding_map_deltaNWSE.includes("N") || surrounding_map_deltaNWSE.includes("W"))){
+                 continue;
+                }        
+              } 
+              else if(this.deltaNWSE[i] == "SW"){
+                if(!(surrounding_map_deltaNWSE.includes("S") || surrounding_map_deltaNWSE.includes("W"))){
+                  continue;
+                }  
+              } 
+              else if(this.deltaNWSE[i] == "SE"){
+                if(!(surrounding_map_deltaNWSE.includes("S") || surrounding_map_deltaNWSE.includes("E"))){
+                  continue;
+                }
+              } 
+              else if(this.deltaNWSE[i] == "NE"){
+              if(!(surrounding_map_deltaNWSE.includes("N") || surrounding_map_deltaNWSE.includes("E"))){
+               continue;
+              }
+            }
+          }
+        
+
+          
 					var next_node = new Node(null, this.current_node, next_YX);  // create a new node with said neighbour's details
 					this.neighbours.push(next_node);  // add to neighbours
-					this.queue.push(next_node);  // add to queue
+
+          step = new UIStep();
+          step.add_action('dp', 'neighbours', next_YX);
+          // step.add_action('ia', 'info data');
+          step.add_inverse('ep', 'neighbours', next_YX);
+          // step.add_inverse('ie', 'info data');
+
+          if(!this.queue_matrix[next_YX[0]][next_YX[1]]){ // prevent from adding to queue again
+					  this.queue.push(next_node);  // add to queue
+            this.queue_matrix[next_YX[0]][next_YX[1]] = 1;
+            step.add_action('dp', 'queue', next_YX);
+            // step.add_action('ia', 'info data');
+            step.add_inverse('ep', 'queue', next_YX);
+            // step.add_inverse('ie', 'info data');
+          }
+          
+          this.steps.push(step);
 				}
 			}
-      this.visited[this.current_node_YX[0]][this.current_node_YX[1]] = 1;  // marks current node YX as visited
-      /* extra code to check if diagonal blocking */
+      /* extra code to check if diagonal blocking *//*
       if (this.diagonal_allow == true && this.num_neighbours == 8){  
         var neighbours_deltaNWSE = [];
         var relative_delta = [];
@@ -119,7 +189,7 @@ class BFS extends GridPathFinder{
           else if(neighbours_deltaNWSE[i] == "SW"){
             if(!(surrounding_map_deltaNWSE.includes("S") || surrounding_map_deltaNWSE.includes("W"))){
               this.queue.splice(-(this.neighbours.length-i), 1); 
-              this.neighbours.splice(i, 1);
+              this.neighbours.splice(i, 1);o
             }  
           } 
           else if(neighbours_deltaNWSE[i] == "SE"){
@@ -136,17 +206,19 @@ class BFS extends GridPathFinder{
           } 
         }
       }
-
+      
+*/
       // problem cannot push 2d array into object
 
-      this.states.push({node_YX: this.current_node.self_YX, F_cost:null, G_cost:null, H_cost:null, queue: nodes_to_array(this.queue, "self_YX"), neighbours: nodes_to_array(this.neighbours, "self_YX")}); 
+      //this.states.push({node_YX: this.current_node.self_YX, F_cost:null, G_cost:null, H_cost:null, queue: nodes_to_array(this.queue, "self_YX"), neighbours: nodes_to_array(this.neighbours, "self_YX")}); 
 
    
       // [node YX, FGH cost, array of queue, 2d array of current visited points, valid neighbours array]
 
 		}
 	  if (this.path==null) console.log("path does not exist");
-    document.getElementById("search_progress_slider").max = this.states.length;
+    myUI.sliders["search_progress_slider"].elem.max = this.steps.length;
+    this.searched = true;
     return this.path;
   }
 
@@ -154,10 +226,14 @@ class BFS extends GridPathFinder{
     if(!this.start) return alert("haven't computed!");
     return {path:this.path, queue:this.queue, visited:this.visited};
   }
-  all_states(){
-    if(!this.start) return alert("haven't computed!");
-    return this.states;
+
+  all_steps(){
+    if(this.searched)
+      return this.steps;
+    else
+      return null;
   }
+
 }
 
 //takes in a array of objects and returns a array of 1 property of the object

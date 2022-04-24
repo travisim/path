@@ -47,8 +47,6 @@
 					    <p>Drag map file here</p>
 					    <input type="file" id="map_input" class="file_input" accept=".map">
 					    <label class="upload-btn" for="map_input">Select map file <a href="https://movingai.com/benchmarks/street/index.html">(source)</a></label>
-
-    
 					  </form>
 					</div>
 				</div>
@@ -70,8 +68,8 @@
 							</button>
 							<button id="start_pause_btn" class="btn">
 								<div class="grid-overlay">
-									<img src="assets/pause.svg" id="pause_icon" class="icon overlay hidden" alt="pause">
 									<img src="assets/start.svg" id="start_icon" class="icon overlay" alt="start">
+									<img src="assets/pause.svg" id="pause_icon" class="icon overlay hidden" alt="pause">
 								</div>
 							</button>
 							<button id="forward_btn" class="btn">
@@ -93,17 +91,17 @@
 							</button>
 						</div>
 						<div id="slider_controls">
-							<label class="label_centered">Animation speed: <span id="animation-speed-label"></span></label>
+							<label class="label_centered">Animation speed: <span id="animation_speed_label">1.00×</span></label>
 							<div class="flex-row">
-								<span>0</span>
-        				<input type="range" min="1" max="1000" value="500" id="animation_speed_slider" class="slider">
-								<span>1000</span>
+								<span>0.25×</span>
+        				<input type="range" min="0" max="4000" value="2000" id="animation_speed_slider" class="slider">
+								<span>4×</span>
 							</div>
 
-							<label class="label_centered">Search progress: <span id="search-progress-label"></span>%</label>
+							<label class="label_centered">Search progress: <span id="search_progress_label"></span>%</label>
 							<div class="flex-row">
 								<span>0%</span>
-        				<input type="range" min="0"  id="search_progress_slider" class="slider">
+        				<input type="range" min="1" id="search_progress_slider" class="slider">
 								<span>100%</span>
 							</div>
 
@@ -115,7 +113,7 @@
 								<option disabled="disabled">&nbsp&nbspX1&nbsp&nbsp&nbspY1&nbsp&nbsp&nbspX2&nbsp&nbsp&nbspY2&nbspOptimal Length</option>
 							</select>
 							
-							<p id="planner-label"></p>
+							<p id="planner_label"></p>
 							<label for="planner_select" class="label_centered">Choose planner:    </label>
 							<select name="planner_select" size="1" id="planner_select" class="select-dropdown"></select>
 						</div>
@@ -145,22 +143,17 @@
 			</div>
 			
 		</div>
-		<script src="scripts/drag-and-drop.js"></script>
-    <script src="scripts/canvas_scaler-and-display.js"></script>
-    <script src="scripts/map_parser-and-display.js"></script>
-		<script src="scripts/scen_parser-and-display.js"></script>
-		<script src="scripts/pathfinding/pathfinder.js"></script>
-    <script src="scripts/pathfinding/bfs.js"></script>
-    <script src="scripts/pathfinding/dfs.js"></script>
-    <script src="scripts/pathfinding/dijkstra.js"></script>
-    <script src="scripts/animate_spread.js"></script>
+		<script src="scripts//pathfinding/pathfinder.js"></script>
+		<script src="scripts//pathfinding/bfs.js"></script>
+		<script src="scripts/pathfinding/dfs.js"></script>
+		<script src="scripts/pathfinding/dijkstra.js"></script>
+		<script src="scripts/ui_elements.js"></script>
+		<script src="scripts/interface.js"></script>
+		<script src="scripts/animation.js"></script>
 		<script src="scripts/controls.js"></script>
-		<script src="scripts/planner_select.js"></script>
-    <script src="scripts/search_progress.js"></script>
-    
-
-    
-    
+		<script src="scripts/step.js"></script>
+		<script src="scripts/upload.js"></script>
+		<script src="scripts/parser-select-display.js"></script>
   </body>
   
 </html>

@@ -65,8 +65,6 @@ canvas{
 	position: absolute;
 }
 
-
-
 /* drag and drop css */
 
 .upload{
@@ -156,3 +154,12 @@ canvas{
 	display: block;
 	width: 95%;
 }
+
+#bg{z-index:99}
+#current_YX{z-index:98}
+#start, #goal{z-index:97}
+#path{z-index:96}
+#neighbours{z-index:95}
+#visited{z-index:94}
+#queue{z-index:93}
+

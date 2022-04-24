@@ -1,8 +1,8 @@
 
-class dijkstra extends GridPathFinder{
+class Dijkstra extends GridPathFinder{
 
 	static get display_name(){
-		return "Dijkstra)";
+		return "Dijkstra";
 	}
 	
 	constructor(map, num_neighbours = 4, diagonal_allow = true, first_neighbour = "N", search_direction = "anticlockwise"){

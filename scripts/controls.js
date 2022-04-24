@@ -1,115 +1,68 @@
-
-// window.map_start;
-// window.map_goal;
-// window.map_arr;
-// window.planners => array of planners
-// window.planner_choice => references the index of the planner in window.planners;
+// myUI.map_start;
+// myUI.map_goal;
+// myUI.map_arr;
+// myUI.planners => array of planners
+// myUI.planner_choice => references the index of the planner in myUI.planners;
 
 /* registers & starts searching for path on the given map using the given solver */
 document.getElementById("compute_btn").addEventListener("click", compute_path);
 
 function compute_path(){
-	if(!window.planner_choice) return alert("no planner loaded!");
-	if(!window.map_arr) return alert("no map loaded!");
-  if(!window.window.map_start) return alert("no scene loaded!");
+	if(!myUI.planner_choice) return alert("no planner loaded!");
+	if(!myUI.map_arr) return alert("no map loaded!");
+  if(!myUI.map_start) return alert("no scene loaded!");
 
-	window.planner = new window.planners[window.planner_choice](window.map_arr);
+	myUI.planner = new myUI.planners[myUI.planner_choice]();
+	myUI.planner.add_map(myUI.map_arr);
 // convert array to new planner 
-	console.log("computing path...")
-	window.path = window.planner.search(window.map_start, window.map_goal); 
-  reset_animation_progress();
-
+	console.log("computing path...");
+	myUI.path = myUI.planner.search(myUI.map_start, myUI.map_goal); 
+	myUI.animation.max_step = myUI.planner.all_steps().length;
+  myUI.reset_animation();
 }
 
 /* displays the solved path */
 document.getElementById("display_btn").addEventListener("click", display_path);
 
 function display_path(){
-	if(!window.planner_choice) return alert("no planner loaded!");
-	if(!window.map_arr) return alert("no map loaded!");
-  if(!window.window.map_start) return alert("no scene loaded!");
-	if(!window.planner) return alert("not computed");
+	if(!myUI.planner_choice) return alert("no planner loaded!");
+	if(!myUI.map_arr) return alert("no map loaded!");
+  if(!myUI.map_start) return alert("no scene loaded!");
+	if(!myUI.planner) return alert("not computed");
 
-  var final_state = window.planner.final_state();
+  let final_state = myUI.planner.final_state();
   if(final_state.length<=1) return;
 
-  var path = final_state.path; // array of coordinates
-	var queue = final_state.queue;  // array of nodes
-	var visited = final_state.visited;  // matrix marking which nodes are visited;
+  let path = final_state.path; // array of coordinates
+  myUI.canvases.path.draw_canvas(path, "1d");
+}
+//displays value of slider
 
-  var queue_coords = [];
-  queue.forEach(node=>{
-    queue_coords.push(node.self_YX);
-  });
-  
+myUI.sliders.animation_speed_slider.elem.oninput = function(){
+	let expo_scaled = 0.25 * Math.pow(2, this.value/1000);  // [0, 4000]=>[0, 4]=>[1, 16]=>[0.25, 4]
+	myUI.sliders.animation_speed_slider.label.innerHTML = `${(Math.round(expo_scaled * 100) / 100).toFixed(2)}×`;
+	myUI.animation.speed = expo_scaled;
+	console.log(myUI.animation.speed);
+}
 
- // display_canvas("queue", "1d", queue_coords, "#E2C2B9");
-
-
- // display_canvas("visited", "2d", visited, "#E7EAB5", false);
-  display_canvas("path", "1d", path, "#E2C2B9");
-  
-  /*var queue_canvas = document.getElementById("queue");
-	queue_canvas.getContext("2d").clearRect(0, 0, queue_canvas.width, queue_canvas.height); // 0 0 512 512
-	queue_canvas.getContext("2d").fillStyle = "#E2C2B9";
-	for(var i=0;i<queue.length;++i){	queue_canvas.getContext("2d").fillRect(queue[i].self_YX[1], queue[i].self_YX[0], 1, 1);
-	}
-
-	var visited_canvas = document.getElementById("visited");
-	visited_canvas.getContext("2d").clearRect(0, 0, visited_canvas.width, visited_canvas.height); // 0 0 512 512
-	visited_canvas.getContext("2d").fillStyle = "#E7EAB5";
-	for(var i=0;i<visited.length;++i){  //  i is Y
-		for(var j=0;j<visited[0].length;++j){  // j is X
-			if(visited[i][j])
-				visited_canvas.getContext("2d").fillRect(j, i, 1, 1);  //  j, i is X, Y
+myUI.sliders.search_progress_slider.elem.oninput = function(){
+	myUI.stop_animation(change_svg = myUI.animation.running);
+	myUI.update_search_slider(this.value);
+	myUI.execute_steps(this.value)
+	return;
+	if(tmp_step<this.value){
+		while(tmp_step<this.value){
+			myUI.animation.all_steps[tmp_step].run();
+			++tmp_step;
 		}
 	}
-  */
-	
-}
-
-document.getElementById("clear_btn").addEventListener("click", clear_animation);
-
-document.getElementById("back_btn").addEventListener("click", step_back);
-
-//document.getElementById("start_btn").addEventListener("click", start_animation); // moved to button.js
-
-//document.getElementById("stop_btn").addEventListener("click", stop_animation); // moved to button.js
-
-document.getElementById("start_pause_btn").addEventListener("click", toggleAnimation);
-
-function toggleAnimation(){
-	document.getElementById("start_icon").classList.toggle("hidden");
-	document.getElementById("pause_icon").classList.toggle("hidden");
-	// do other things to map
-
-	if(document.getElementById("start_icon").classList.contains("hidden")){
-		start_animation();
-	}
 	else{
-		stop_animation();
+		while(tmp_step>this.value){
+			--tmp_step;
+			myUI.animation.all_steps[tmp_step].run(inverse=true);
+		}
 	}
-}
-
-
-document.getElementById("forward_btn").addEventListener("click", step_forward);
-
-//displays value of slider
-var slider = document.getElementById("animation_speed_slider");
-var output = document.getElementById("animation-speed-label");
-output.innerHTML = slider.value;
-slider.oninput = function() {
-  output.innerHTML = slider.value;
-}
-
-document.getElementById("end_btn").addEventListener("click", jump_to_end);
-
-document.getElementById("detail_btn").addEventListener("click", toggleMapDetail);
-
-function toggleMapDetail(){
-	document.getElementById("map_detailed_icon").classList.toggle("hidden");
-	document.getElementById("map_simple_icon").classList.toggle("hidden");
-	// do other things to map
+	myUI.animation.processing = false;
 }
 
 function toggleClass(elementClass, toggleClass){
@@ -119,3 +72,91 @@ function toggleClass(elementClass, toggleClass){
 		el.classList.toggle(toggleClass);
 	}
 }
+
+myUI.reset_animation = function(){
+	myUI.stop_animation(myUI.animation.running); //stop animation if scen changed halfway while still animating
+	myUI.update_search_slider(0);
+	["visited",	"neighbours", "queue",	"current_YX",	"path"].forEach(canvas_id=>{
+		myUI.canvases[canvas_id].erase_canvas();
+	});
+}
+
+myUI.buttons.clear_btn.btn.addEventListener("click", myUI.reset_animation);
+
+
+myUI.step_back = function(){
+	myUI.stop_animation(change_svg = true);
+	--myUI.animation.step;
+	myUI.animation.all_steps[myUI.animation.step].run(inverse=true);
+	myUI.update_search_slider(myUI.animation.step);
+	console.log(myUI.animation.step);
+}
+myUI.buttons.back_btn.btn.addEventListener("click", myUI.step_back);
+
+
+myUI.start_animation = function(){
+	myUI.animation.running = true;
+	animation_backend();
+}
+
+myUI.stop_animation = function(change_svg = false){
+	if(change_svg && myUI.animation.running)
+		myUI.buttons.start_pause_btn.next_svg();
+	myUI.animation.running = false;
+}
+
+myUI.step_forward = function(){
+	myUI.stop_animation(change_svg = true);
+	myUI.animation.all_steps[myUI.animation.step].run();
+	++myUI.animation.step;
+	myUI.update_search_slider(myUI.animation.step);
+	console.log(myUI.animation.step);
+}
+myUI.buttons.forward_btn.btn.addEventListener("click", myUI.step_forward);
+
+
+myUI.jump_to_end = function(){
+	myUI.stop_animation(change_svg = true);
+	//myUI.animation.step = -1;  //  change ot end
+	myUI.update_search_slider(myUI.animation.max_step-1);
+	let final_state = myUI.planner.final_state();
+	let path = final_state.path; // array of coordinates
+	let queue = final_state.queue;  // array of nodes
+	let visited = final_state.visited;  // matrix marking which nodes are visited;
+
+  let queue_coords = [];
+  queue.forEach(node=>{
+    queue_coords.push(node.self_YX);
+  })
+  myUI.canvases.path.draw_canvas(path, "1d");
+	myUI.canvases.queue.draw_canvas(queue_coords, "1d");
+	myUI.canvases.visited.draw_canvas(visited, "2d");
+}
+myUI.buttons.end_btn.btn.addEventListener("click", myUI.jump_to_end);
+
+
+myUI.toggleAnimation = function(){
+	myUI.buttons.start_pause_btn.next_svg();
+	if(myUI.animation.running){
+		myUI.stop_animation();
+	}
+	else{
+		myUI.start_animation();
+	}
+}
+myUI.buttons.start_pause_btn.btn.addEventListener("click", myUI.toggleAnimation);
+
+
+
+myUI.toggleMapDetail = function(){
+	myUI.buttons.detail_btn.next_svg();
+
+	// do other stuff
+}
+myUI.buttons.detail_btn.btn.addEventListener("click", myUI.toggleMapDetail);
+
+
+myUI.toggleMapEdit = function(){
+	//myUI.buttons.edit_map_btn.next_svg(); // haven't implemented yet
+}
+myUI.buttons.edit_map_btn.btn.addEventListener("click", myUI.toggleMapEdit);
