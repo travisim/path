@@ -1,4 +1,3 @@
-
 class BFS extends GridPathFinder{
 
 	static get display_name(){

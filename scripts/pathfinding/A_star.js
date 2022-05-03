@@ -38,9 +38,9 @@ class A_star extends GridPathFinder{
 
     
     while(this.queue.length){  // while there are still nodes left to visit
-      console.log(nodes_to_array(this.queue, "f_cost"),"a");          //++ from bfs.js
+            //++ from bfs.js
       this.queue.sort(function (a, b){return a.f_cost - b.f_cost});   //++ from bfs.js
-      console.log(nodes_to_array(this.queue, "f_cost"),"b");          //++ from bfs.js
+               //++ from bfs.js
       // if not first node
       if(this.current_node_YX){
         this.prev_node_YX = this.current_node_YX
