@@ -26,15 +26,16 @@ class BFS extends GridPathFinder{
 		// generate empty 2d array
 
 		console.log("starting");
-		let start_node = new Node(null, null, this.start);
+		let start_node = new Node(null, null, null, null, this.start);
 		//var found = false;  // once the program exits the while-loop, this is the variable which determines if the endpoint has been found
     /* ^ deprecated, used a this.path variable to assign */
 		this.queue.push(start_node);  // begin with the start; add starting node to rear of []
     //---------------------checks if visited 2d array has been visited
     
     while(this.queue.length){  // while there are still nodes left to visit
-      if(this.current_node_YX)
+      if(this.current_node_YX){
         this.prev_node_YX = this.current_node_YX
+      }
 			this.current_node = this.queue.shift(); // remove the first node in queue
 			this.current_node_YX = this.current_node.self_YX; // first node in queue YX
 			/*if the current node has already been visited, we can move on to the next node*/
@@ -86,6 +87,7 @@ class BFS extends GridPathFinder{
 			this.neighbours = [];  // reset the neighbours for each new node
 			//console.log("next");
 			/* iterates through the 4 or 8 neighbours and adds the valid (passable & within boundaries of map) ones to the queue & neighbour array */
+        //need current node
       var surrounding_map_deltaNWSE = [];
       for(var i=0;i<this.num_neighbours;++i){
         var next_YX_temp = [this.current_node_YX[0]+this.delta[i][0], this.current_node_YX[1]+this.delta[i][1]];
@@ -94,6 +96,7 @@ class BFS extends GridPathFinder{
                 surrounding_map_deltaNWSE.push(this.deltaNWSE[i]);
         }
       }
+    
       
 			for(var i=0;i<this.num_neighbours;++i){
 				var next_YX = [this.current_node_YX[0]+this.delta[i][0], this.current_node_YX[1]+this.delta[i][1]];  // calculate the coordinates for the new neighbour
@@ -130,7 +133,7 @@ class BFS extends GridPathFinder{
         
 
           
-					var next_node = new Node(null, this.current_node, next_YX);  // create a new node with said neighbour's details
+					var next_node = new Node(null, null, null, this.current_node, next_YX);  // create a new node with said neighbour's details
 					this.neighbours.push(next_node);  // add to neighbours
 
           step = new UIStep();

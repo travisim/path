@@ -1,8 +1,7 @@
-
-class DFS extends GridPathFinder{
+class A_star extends GridPathFinder{
 
 	static get display_name(){
-		return "Depth-First Search (DFS)";
+		return "A star";
 	}
 	
 	constructor(num_neighbours = 8, diagonal_allow = true, first_neighbour = "N", search_direction = "anticlockwise"){
@@ -26,17 +25,27 @@ class DFS extends GridPathFinder{
 		// generate empty 2d array
 
 		console.log("starting");
-		let start_node = new Node(null, null, this.start);
+		let start_node = new Node(0, 0, 0, null, this.start);
 		//var found = false;  // once the program exits the while-loop, this is the variable which determines if the endpoint has been found
     /* ^ deprecated, used a this.path variable to assign */
 		this.queue.push(start_node);  // begin with the start; add starting node to rear of []
     //---------------------checks if visited 2d array has been visited
+
+
+
+
+
+
     
     while(this.queue.length){  // while there are still nodes left to visit
+      console.log(nodes_to_array(this.queue, "f_cost"),"a");          //++ from bfs.js
+      this.queue.sort(function (a, b){return a.f_cost - b.f_cost});   //++ from bfs.js
+      console.log(nodes_to_array(this.queue, "f_cost"),"b");          //++ from bfs.js
+      // if not first node
       if(this.current_node_YX){
         this.prev_node_YX = this.current_node_YX
       }
-			this.current_node = this.queue.pop(); // remove the last node in queue
+			this.current_node = this.queue.shift(); // remove the first node in queue
 			this.current_node_YX = this.current_node.self_YX; // first node in queue YX
 			/*if the current node has already been visited, we can move on to the next node*/
       /*console.log("current");
@@ -52,6 +61,7 @@ class DFS extends GridPathFinder{
       step.add_action(`dp`, `visited`, this.current_node_YX);
       step.add_inverse(`ec`, `current_YX`, this.current_node_YX);
       step.add_inverse(`ep`, `visited`, this.current_node_YX);
+      // if not first node
       if(this.prev_node_YX){
         step.add_inverse(`dp`, `current_YX`, this.prev_node_YX);
         this.neighbours.forEach(neighbour=>{
@@ -125,22 +135,57 @@ class DFS extends GridPathFinder{
                 }
               } 
               else if(this.deltaNWSE[i] == "NE"){
-              if(!(surrounding_map_deltaNWSE.includes("N") || surrounding_map_deltaNWSE.includes("E"))){
+              if(!(surrounding_map_deltaNWSE.includes("N") || surrounding_map_deltaNWSE.includes("E"))){t
                continue;
               }
             }
           }
         
 
-          
-					var next_node = new Node(null, this.current_node, next_YX);  // create a new node with said neighbour's details
-					this.neighbours.push(next_node);  // add to neighbours
 
-          step = new UIStep();
+
+
+          // start to a node, taking into account obstacles
+          var g_cost = this.current_node.g_cost + ((this.current_node.self_YX[0]-next_YX[0])**2+(this.current_node.self_YX[1]-next_YX[1])**2)**0.5//euclidean //++ from bfs.js
+        //var g_cost = this.current_node.g_value + (math.abs(this.current_node.node_YX[0]-next_YX[0])+math.abs(this.current_node.node_YX[1]-next_YX[1]))//manhatten //++ from bfs.js
+
+          var h_cost = ((this.goal[0]-next_YX[0])**2+(this.goal[1]-next_YX[1])**2)**0.5
+      //  var h_cost = (math.abs(this.goal[0]-next_YX[0])+math.abs(this.goal[1]-next_YX[1]))
+
+          var f_cost = g_cost + h_cost //++ from bfs.js
+          
+					
+          
+          var next_node = new Node(f_cost, g_cost, h_cost, this.current_node, next_YX);  // create a new node with said neighbour's details
+
+                 step = new UIStep();
           step.add_action('dp', 'neighbours', next_YX);
           // step.add_action('ia', 'info data');
           step.add_inverse('ep', 'neighbours', next_YX);
           // step.add_inverse('ie', 'info data');
+          /*
+          if ( i==0 ){
+            var largest_next_node  =  next_node;
+            continue;
+          }
+          if (largest_next_node.g_cost > next_node.g_cost){
+        
+       
+          }
+
+          else if (largest_next_node.g_cost < next_node.g_cost){
+            var largest_next_node = next_node;
+       
+            
+          }
+          if ( i!=(this.num_neighbours-1)){
+            continue;
+          }
+          */
+					
+					this.neighbours.push(next_node);  // add to neighbours
+
+   
 
           if(!this.queue_matrix[next_YX[0]][next_YX[1]]){ // prevent from adding to queue again
 					  this.queue.push(next_node);  // add to queue

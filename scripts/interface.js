@@ -61,7 +61,7 @@ myUI.initialize = function(){
 
   myUI.curr_step = 0;
 
-  myUI.planners = [BFS,DFS,Dijkstra];
+  myUI.planners = [BFS,DFS,Dijkstra,A_star];
   myUI.planner_choice = 0;
   myUI.planner =  new myUI.planners[myUI.planner_choice]();
 

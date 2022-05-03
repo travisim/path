@@ -37,8 +37,10 @@ class GridPathFinder{
 }
 
 class Node{
-	constructor(f_value, parent, self_YX){
-	  	this.f_value = f_value;
+	constructor(f_cost, g_cost, h_cost, parent, self_YX){
+	  	this.f_cost = f_cost;
+      this.g_cost = g_cost;
+      this.h_cost = h_cost;
 		  this.parent = parent;
 		  this.self_YX = self_YX;
 	}
